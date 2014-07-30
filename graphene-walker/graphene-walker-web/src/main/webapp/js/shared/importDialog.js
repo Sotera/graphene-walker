@@ -84,6 +84,8 @@ Ext.define("DARPA.importDialog", {
                                            thisWindow.hide();
                                            grGraphVis.importGraph(graphJSON);
                                            thisWindow.close();
+                                           
+                                           AC.logUserActivity("User successfully imported a graph", "import_data", AC.WF_ENRICH);
                                        }
                                        // else handle internal error case. grGraphVis should never be null 
                                     }
@@ -104,12 +106,14 @@ Ext.define("DARPA.importDialog", {
                             if (importTextCmp) {
                                 importTextCmp.setRawValue("");
                             }
+                            AC.logUserActivity("User cleared import text area", "remove_graph_annotation", AC.WF_ENRICH);
 			}
 		},
                 {
 			text: 'Cancel',
 			handler: function(btn, e) {
 				thisWindow.close();
+				AC.logUserActivity("User canceled import", "close_modal_tools", AC.WF_CREATE);
 			}
 		}];
 		

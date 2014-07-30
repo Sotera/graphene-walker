@@ -118,6 +118,8 @@ Ext.define("DARPA.exportDialog", {
 							break;
 					}
 	
+					AC.logUserActivity("User confirmed export", "export_data", AC.WF_ENRICH);
+					
 					if (skipREST == true) {
 						var pngData = thisWindow.getGraphPNG();
 						
@@ -144,9 +146,14 @@ Ext.define("DARPA.exportDialog", {
 							}
 						})(download, "click");
 						
+						AC.logSystemActivity("Client process to export image");
+						
 						thisWindow.close();
 					} else {
-					
+						
+						AC.logSystemActivity("Ajax request to export file", {
+							"serviceUrl" : 'rest/graph/' + serviceURL
+						});
 						// We do Not want the response to be rendered in the Browser.
 						// Instead we want the browser to popup a dialog to download the exported file
 						Ext.Ajax.request({
@@ -173,6 +180,7 @@ Ext.define("DARPA.exportDialog", {
 								// pass this file location to doExportDownload
 								var fileURI = resp.responseText;
 								doExportDownload("rest/graph/" + downloadURL, fileURI);
+								AC.logSystemActivity("Ajax request to export file succeeded");
 							},
 							failure: function(resp) {
 								thisWindow.close();
@@ -184,6 +192,7 @@ Ext.define("DARPA.exportDialog", {
 								});
 
 								err.show();
+								AC.logSystemActivity("Ajax request to export file failed");
 							}
 						}); 
 					}                    
@@ -195,6 +204,7 @@ Ext.define("DARPA.exportDialog", {
 			text: 'Cancel',
 			handler: function(btn, e) {
 				thisWindow.close();
+				AC.logUserActivity("User canceled export", "close_modal_tools", AC.WF_CREATE);
 			}
 		}];
 		
