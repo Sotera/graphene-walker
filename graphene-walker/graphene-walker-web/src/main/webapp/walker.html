@@ -91,6 +91,11 @@
 -->
         <script src="core/js/cytoscape/arbor.js"></script>
 
+	<!-- Draper API Logger -->
+	<script type="text/javascript" src="js/draper/draper.activity_logger-2.1.1.js"></script>
+	<!-- <script type="text/javascript" src="js/draper/draper.activity_worker-2.1.1.js"></script> -->
+
+		
 	<script type="text/javascript">
 		var canUseD3 = true;
 		if (Ext.isIE && Ext.ieVersion < 9) {
@@ -177,18 +182,17 @@
         <script type="text/javascript" src="js/shared/DetailsViewer.js"></script>
 
 	<script type="text/javascript">
-//We don't need to know the absolute path or the deployment context.  The prefix is always just rest/
+	
+		// initialize Draper activity logger
+		var AC = new activityLogger('js/draper/draper.activity_worker-2.1.1.js');
+		
+		// register activity logger
+		var url = "http://localhost:1337"; // or wherever the activity logging server is
+		AC.registerActivityLogger(url, "Graphene-Enron", "4.0.8");
 
-                // DRAPER API
-                //Instantiate the Activity Logger
-                //var activityLogger = new activityLogger();
-
-                //Register the logger.
-                //In this case, we register the logger to look for the logger on
-                //port 1337 of the machine "localhost", telling it that this
-                //software component is version 3.04 of the software named
-                //"graphene" and that the session ID is "AC76999"
-                //activityLogger.registerActivityLogger("http://localhost:1337", "graphene", "3.5 Beta", "AC76999");
+		// shortcuts to logSystemActivity and logUserActivity
+		// AC.loguser = AC.logUserActivity;
+		// AC.logsys = AC.logSystemActivity;
 
 		function makeCSTab()
 		{
@@ -360,7 +364,8 @@
 
 //				alert("Schema " + schema + " Entity " + entity);
 			};
-
+			
+			AC.logSystemActivity("Ext finished loading - application has started");
 		}); // on ready
 
 
