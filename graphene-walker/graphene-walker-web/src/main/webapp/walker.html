@@ -175,7 +175,7 @@
         <script type="text/javascript" src="js/shared/userDefinedSession.js"></script>
         <script type="text/javascript" src="js/shared/exportDialog.js"></script>
         <script type="text/javascript" src="js/shared/importDialog.js"></script>
-        <script type="text/javascript" src="js/shared/ActivityLogger.js"></script>
+        <!--<script type="text/javascript" src="js/shared/ActivityLogger.js"></script>-->
         <script type="text/javascript" src="js/shared/nodeActions.js"></script>
         <script type="text/javascript" src="js/shared/graphLayoutMenu.js"></script>
         <script type="text/javascript" src="js/shared/graphManagerMenu.js"></script>
@@ -187,8 +187,8 @@
 		var AC = new activityLogger('js/draper/draper.activity_worker-2.1.1.js');
 		
 		// register activity logger
-		var url = "http://localhost:1337"; // or wherever the activity logging server is
-		AC.registerActivityLogger(url, "Graphene-Enron", "4.0.8");
+		var url = "http://10.1.90.46:1337"; // or wherever the activity logging server is
+		AC.registerActivityLogger(url, "Graphene-Walker", "4.0.8");
 
 		// shortcuts to logSystemActivity and logUserActivity
 		// AC.loguser = AC.logUserActivity;
