@@ -50,6 +50,10 @@ Ext.define("DARPA.EntityGrid",  {
                                 }
                             });
                             grid.store.filter(filters);
+                            
+                            AC.logUserActivity("User filtered results grid", "enter_filter_text", AC.WF_GETDATA, {
+								"filter1" : filterVal
+							});
                         }
                     }
                 }
@@ -84,6 +88,11 @@ Ext.define("DARPA.EntityGrid",  {
                                 }
                             });
                             grid.store.filter(filters);
+                            
+                            AC.logUserActivity("User AND-filtered results grid", "enter_filter_text", AC.WF_GETDATA, {
+								"filter1" : filterVal1,
+								"filter2" : filterVal2
+							});
                         //}
                     }
                 }
@@ -101,6 +110,9 @@ Ext.define("DARPA.EntityGrid",  {
                         searchFilter1.caseSensitive = checked;
                         searchFilter2.caseSensitive = checked;
                         if (prevCheckVal != checked) {
+                        	
+                        	AC.logUserActivity("User changed filter case sensitivity", "reset_filter_parameters", AC.WF_GETDATA);
+                        	
                             // force the filters to run with the new setting
                             var searchVal1 = searchFilter1.getValue();                            
                             searchFilter1.fireEvent('change', searchFilter1, searchVal1, "junk", null);
@@ -125,6 +137,7 @@ Ext.define("DARPA.EntityGrid",  {
                     var searchFilter2 = Ext.getCmp('elistSearchFilter2');
                     searchFilter2.setValue("");
                     
+                    AC.logUserActivity("User cleared filter fields", "reset_filter_parameters", AC.WF_GETDATA);
                     grid.store.clearFilter();
                 }
             }          
@@ -162,6 +175,9 @@ Ext.define("DARPA.EntityGrid",  {
                   doSort: function(state) {
                       var ds = this.up('grid').getStore();
                       var field = this.getSortParam();
+                      
+                      AC.logUserActivity("User sorted results grid by customer number", "sort", AC.WF_EXPLORE);
+                      
                       ds.sort( {
                           property: field,
                           direction: state,
@@ -238,6 +254,9 @@ Ext.define("DARPA.EntityGrid",  {
 					var self=this;
 					var custno = ""+record.raw.id;
 					var tablink="showEntityDetails('" + record.raw.id + "');";
+					
+					// Draper logging handled in showEntityDetails function defined in walker.html
+					
 					return ("<button style='font-size:75%;' onclick=" + tablink + ">SHOW IN TAB</button>");
 				}
 

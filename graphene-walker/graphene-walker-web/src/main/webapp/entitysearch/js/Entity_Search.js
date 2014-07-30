@@ -192,9 +192,11 @@ Ext.define("DARPA.EntitySearch",
        				filters.push(d);
 		}
 
-		global_current_datasource=globalSourceStore.getAt(0);       			
+       		global_current_datasource=globalSourceStore.getAt(0);       			
        		var source = global_current_datasource.data.id;
        		var dataset = 'Entities';
+       		
+       		AC.logUserActivity("User searched for an entity", "execute_query_filter", AC.WF_GETDATA);
        		
        		getESFrame().getEntityGrid().getMatches(dataset, source, filters);
 		
