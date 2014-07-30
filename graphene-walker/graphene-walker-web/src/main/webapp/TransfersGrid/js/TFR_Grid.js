@@ -390,6 +390,12 @@ Ext.define("DARPA.TransfersGrid",  {
 				window.setFrom(record.data.senderValue);
 				window.setSubject(record.data.subject);
 				window.setBody(record.data.comments);
+				
+				AC.logUserActivity("User right-clicked row to view email", "show_data_info", AC.WF_EXPLORE, {
+					"email_to" : to,
+					"email_from" : from,
+					"email_subject" : subject
+				});
 			},
 /*        
 OLD TODO
