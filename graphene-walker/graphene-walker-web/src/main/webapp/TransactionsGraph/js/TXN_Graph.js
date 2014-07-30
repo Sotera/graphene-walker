@@ -281,6 +281,7 @@ Ext.define("DARPA.TransactionGraph", {
                     })
                 }   
 */            
+        AC.logSystemActivity("Start loading data for Transaction graph");
 		graphStore.load(
 		{
 			scope:this, //?
@@ -305,6 +306,7 @@ Ext.define("DARPA.TransactionGraph", {
 //                                    pb2.reset();
 //                                }
                                 self.clear();
+                                AC.logSystemActivity("Failed loading data for Transaction graph");
                             }
                             else {
 				this.setStatus("LOADED DATA");
@@ -325,10 +327,7 @@ Ext.define("DARPA.TransactionGraph", {
                                 var nodeCount = self.json.nodes.length;
                                 self.appendTabTitle("(" + nodeCount.toString() + ")");
                                 
-                                // DRAPER API
-                                // Send a System Activity Message with optional metadata
-                                //activityLogger.logSystemActivity('Graph results returned and displayed', 
-                                //    {'Tab':'Transaction Graph', 'searchResults': { 'nodesFound': graph.nodes.length.toString() }});
+                                AC.logSystemActivity("Successfully loaded data for Transaction graph");
                             }
 			}
 		});
@@ -547,6 +546,11 @@ Ext.define("DARPA.TransactionGraph", {
 		window.setSubject(subject);
 		window.setBody(body);
 		
+		AC.logUserActivity("User selected graph edge to view email", "show_data_info", AC.WF_EXPLORE, {
+			"email_to" : to,
+			"email_from" : from,
+			"email_subject" : subject
+		});
 	},
 	
 	nodeEnter:function(node)
@@ -742,6 +746,8 @@ Ext.define("DARPA.TransactionGraph", {
                                     // before we have fully loaded the new graph
                 self.json1HopNode = node;
                                 
+                
+        AC.logSystemActivity("Start loading data for Transaction graph - 1hop");
 		graphStore.load(
 		{
 			scope:this, //?
@@ -755,6 +761,7 @@ Ext.define("DARPA.TransactionGraph", {
                                     pb.reset();
                                 }                                
                                 // don't alter or clear the existing graph
+                                AC.logSystemActivity("Failed loading data for Transaction graph - 1hop");
                             }
                             else {
                                 var graph = xmlToGraph(records[0].raw);     // read the xml into graph structure
@@ -775,7 +782,10 @@ Ext.define("DARPA.TransactionGraph", {
                                             'This number has more than ' + maxNewCallsAlertThresh + ' items and may clutter the display. Do you want to continue displaying it?', 
                                             function(ans) {
                                                 if (ans == 'yes') {
+                                                	AC.logUserActivity("User confirmed load of 1Hop graph", "show_graph", AC.WF_CREATE);
                                                     self.showjson1Hop(true);
+                                                } else {
+                                                	AC.logUserActivity("User canceled load of 1Hop graph", "close_modal_tools", AC.WF_CREATE);
                                                 }
                                             }
                                         );
@@ -783,6 +793,7 @@ Ext.define("DARPA.TransactionGraph", {
                                     else {
                                         self.showjson1Hop(true);
                                     }
+                                    AC.logSystemActivity("Successfully loaded data for Transaction graph - 1Hop");
                                 }
                                 if (pb) {
                                     pb.updateText(graph.nodes.length + " nodes");

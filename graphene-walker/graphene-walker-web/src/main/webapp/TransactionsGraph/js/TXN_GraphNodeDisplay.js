@@ -89,6 +89,10 @@ Ext.define("DARPA.TXNGNodeDisplay",
 			html = "<span style='color:blue'>[Right-click the selected edge to view email content]</span><br><br>" + html; 
 		}
 		detailsItems[2].update(html);
+		
+		AC.logUserActivity("User selected graph element to view details", "show_data_info", AC.WF_EXPLORE, {
+			"ElemId" : data.id
+		});
 	},
     
     // MFM

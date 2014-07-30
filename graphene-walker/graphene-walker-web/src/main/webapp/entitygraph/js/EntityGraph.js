@@ -333,11 +333,10 @@ Ext
 						 * pb.updateText("."); } }); }
 						 */
 
-						graphStore
-								.load({
+						AC.logSystemActivity("Load Entity Graph");
+						graphStore.load({
 									scope : this, // ?
-									callback : function(records, operation,
-											success) {
+									callback : function(records, operation, success) {
 
 										var pb2 = self.getProgressBar();
 
@@ -345,11 +344,12 @@ Ext
 											alert("Search failed due to server error.");
 
 											if (pb2) {
-												pb2
-														.updateText("Search failed due to server error.");
+												pb2.updateText("Search failed due to server error.");
 												pb2.reset();
 											}
 											self.clear();
+											
+											AC.logSystemActivity("Failed to load Entity Graph");
 										} else {
 
 											self.json = records[0].raw;
@@ -384,15 +384,9 @@ Ext
 											// pb2.reset();
 											// }
 
-											// DRAPER API
-											// Send a System Activity Message
-											// with optional metadata
-											// activityLogger.logSystemActivity('Graph
-											// results returned and displayed',
-											// {'Tab':'PB Graph',
-											// 'searchResults': { 'nodesFound':
-											// graph.nodes.length.toString()
-											// }});
+											AC.logSystemActivity("Loaded Entity Graph", {
+												"NodeCount": nodeCount
+											});
 										}
 									}
 								});

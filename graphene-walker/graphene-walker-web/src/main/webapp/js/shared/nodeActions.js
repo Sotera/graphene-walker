@@ -39,11 +39,7 @@ Ext.define("DARPA.Node_Actions", {
 					};
 					graph.pivot(nodes[0]);
 
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('Pivot on Selected Node', 'PB Graph Tab', activityLogger.WF_OTHER, 
-					//    {'Tab':'PB Graph', 'action': 'Pivot', 'selectedNode': node.data().name });
-
+					AC.logUserActivity("User PIVOTED on a node", "show_graph", AC.WF_CREATE);
 				} else {
 					var msg = (nodes.length == 0) ?
 						"You must first select a node before you can attempt to pivot the graph." :
@@ -81,11 +77,8 @@ Ext.define("DARPA.Node_Actions", {
 							unhide.setDisabled(false);
 						};
 					}
-
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('Hide Selected Node', 'PB Graph Tab', activityLogger.WF_OTHER, 
-					//    {'Tab':'PB Graph', 'action': 'Hide', 'selectedNode': node.data().name });
+					
+					AC.logUserActivity("User HID a node ", "hide_graph", AC.WF_CREATE);
 				};
 			} // handler
 		}); // hide
@@ -112,11 +105,7 @@ Ext.define("DARPA.Node_Actions", {
 					}
 					graph.unpivot('customer');
 
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('Pivot on Selected Node', 'PB Graph Tab', activityLogger.WF_OTHER, 
-					//    {'Tab':'PB Graph', 'action': 'Pivot', 'selectedNode': node.data().name });
-
+					AC.logUserActivity("User UNPIVOTED on a node", "show_graph", AC.WF_CREATE);
 				}; // if node
 			} // handler
 		}); // unpivot
@@ -137,10 +126,7 @@ Ext.define("DARPA.Node_Actions", {
 					graph.GraphVis.showAll();
 					but.setDisabled(true);
 					
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('UNHide Selected Node', 'PB Graph Tab', activityLogger.WF_OTHER, 
-					//    {'Tab':'PB Graph', 'action': 'UNHide', 'selectedNode': gf.prevNode.name });
+					AC.logUserActivity("User UNHID hidden nodes", "show_graph", AC.WF_CREATE);
 				}; // if graph
 			} // handler
 		} // extend config
@@ -175,10 +161,7 @@ Ext.define("DARPA.Node_Actions", {
 						but.enable();
 					*/
 					
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('Expand Selected Node', 'PB Graph Tab', activityLogger.WF_SEARCH, 
-					//    {'Tab':'PB Graph', 'action': 'Expand', 'selectedNode': node.data().name });
+					AC.logUserActivity("User EXPANDED a node", "show_graph", AC.WF_CREATE);
 				}
 		    }
 		});
@@ -214,10 +197,7 @@ Ext.define("DARPA.Node_Actions", {
 						graph.SM.clear();
 					*/
 					
-					// DRAPER API
-					// Send a User Activity Message with optional metadata
-					//activityLogger.logUserActivity('Expand Selected Node', 'PB Graph Tab', activityLogger.WF_SEARCH, 
-					//    {'Tab':'PB Graph', 'action': 'Expand', 'selectedNode': node.data().name });
+					AC.logUserActivity("User UNEXPANDED an expanded node", "hide_graph", AC.WF_CREATE)
 				}
 		    }
 		});
@@ -239,6 +219,8 @@ Ext.define("DARPA.Node_Actions", {
 					for (var i = 0; i < nodes.length; i++) {
 						graph.showDetail(nodes[i].data());
 					}
+					
+					AC.logUserActivity("User SHOWED another tab for the selected entity node", "show_data", AC.WF_CREATE);
 				} else {
 					Ext.Msg.alert("Warning", "You must first select one or more nodes before you can create its tab")
 				}
@@ -262,9 +244,11 @@ Ext.define("DARPA.Node_Actions", {
 				switch (currentLayout) {
 					case "COSE" :
 						cytoscape.extensions.layout.cose.prototype.stop();
+						AC.logUserActivity("User forcefully stopped COSE layout", "stop_animation", AC.WF_CREATE);
 						break;
 					case "ARBOR":
 						cytoscape.extensions.layout.arbor.prototype.stop();
+						AC.logUserActivity("User forcefully stopped ARBOR layout", "stop_animation", AC.WF_CREATE);
 						break;
 					default:
 						break;
@@ -294,10 +278,7 @@ Ext.define("DARPA.Node_Actions", {
 				'<b>IMPORT GRAPH</b>:&nbsp;&nbsp;&nbsp;&nbsp;This import a previously exported graph.<br><br>'
 			    );
 		
-			    // DRAPER API
-				// Send a User Activity Message with optional metadata
-			       // activityLogger.logUserActivity('View ACTIONS Help', 'PB Graph Tab', activityLogger.WF_OTHER, 
-			       //     {'Tab':'PB Graph', 'action': 'ACTIONS Help', 'selectedNode': 'NA' });
+			    AC.logUserActivity("User clicked the HELP button", "show_instructional_material", AC.WF_CREATE);
 			}
 		});
 
