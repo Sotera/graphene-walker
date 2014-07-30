@@ -1,0 +1,7 @@
+<html t:type="graphene/layout" title="About graphene-walker-web"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+    <p>About graphene-walker-web application ...</p>
+
+</html>
