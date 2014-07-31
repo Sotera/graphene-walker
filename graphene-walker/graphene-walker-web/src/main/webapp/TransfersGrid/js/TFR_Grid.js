@@ -380,16 +380,21 @@ Ext.define("DARPA.TransfersGrid",  {
             }, // select
             // row right-click handler
             itemcontextmenu: function(view, record, item, index, e, eOpts) {
-    			
+    			var to = record.data.receiverValue;
+    			var from = record.data.senderValue;
+    			var subject = record.data.subject;
+    			var body = record.data.comments;
+    			var timeStamp = record.data.date;
+            	
 				var window = Ext.create("DARPA.DetailsViewer", {
-					timeStamp: record.data.date
+					timeStamp: timeStamp
 				});
 				
 				window.show();
-				window.setTo(record.data.receiverValue);
-				window.setFrom(record.data.senderValue);
-				window.setSubject(record.data.subject);
-				window.setBody(record.data.comments);
+				window.setTo(to);
+				window.setFrom(from);
+				window.setSubject(subject);
+				window.setBody(body);
 				
 				AC.logUserActivity("User right-clicked row to view email", "show_data_info", AC.WF_EXPLORE, {
 					"email_to" : to,
