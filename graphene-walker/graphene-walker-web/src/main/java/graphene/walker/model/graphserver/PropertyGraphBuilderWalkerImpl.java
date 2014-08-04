@@ -1,5 +1,7 @@
 package graphene.walker.model.graphserver;
 
+import java.util.Iterator;
+
 import graphene.dao.EntityRefDAO;
 import graphene.dao.IdTypeDAO;
 import graphene.walker.model.sql.walker.WalkerEntityref100;
@@ -10,6 +12,7 @@ import graphene.services.PropertyGraphBuilder;
 import graphene.util.validator.ValidationUtils;
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericNode;
+import mil.darpa.vande.generic.V_GraphQuery;
 
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
@@ -47,7 +50,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 		String custno = p.getCustomernumber();
 		String acno = p.getAccountnumber();
 		String identifier = p.getIdentifier();
-
+		
 		V_GenericNode custNode = null, acnoNode = null, idNode = null;
 		if (ValidationUtils.isValid(custno)) {
 			custNode = nodeList.getNode(custno);
@@ -62,7 +65,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 				custNode.addProperty("Customer Number", custno);
 				custNode.addProperty("background-color", "red");
 				custNode.addProperty("color", "red");
-				custNode.setColor("#FF0000");
+				custNode.setColor("#00FF00");
 
 				/*
 				 * This is kind of business logic-like. The customer node also
@@ -98,7 +101,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 				nodeList.addNode(acnoNode);
 			}
 		}
-
+		
 		if (ValidationUtils.isValid(identifier, p.getIdtypeId())) {
 			String nodeId = identifier + p.getIdtypeId();
 			idNode = nodeList.getNode(nodeId);
@@ -180,5 +183,23 @@ public class PropertyGraphBuilderWalkerImpl extends
 
 		return true;
 	}
-
+	
+	@Override
+	public void performPostProcess(V_GraphQuery graphQuery) {
+		Iterator<String> iter = graphQuery.getSearchIds().iterator();
+		
+		logger.debug("Performing post process");
+		String color = "red";
+		
+		while (iter.hasNext()) {
+			String id = iter.next();
+			try {
+				V_GenericNode searched = nodeList.getNode(id);
+				searched.setColor(color);
+				logger.debug("Node with id(" + id + ") is now " + color);
+			} catch (Exception e) {
+				logger.error("Could not find node with id = " + id);
+			}
+		}
+	}
 }
