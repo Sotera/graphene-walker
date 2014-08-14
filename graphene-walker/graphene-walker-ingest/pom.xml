@@ -30,6 +30,10 @@
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-dao-neo4j</artifactId>
 		</dependency>
+				<dependency>
+			<groupId>${base.project.groupId}</groupId>
+			<artifactId>graphene-dao-titan</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-util</artifactId>

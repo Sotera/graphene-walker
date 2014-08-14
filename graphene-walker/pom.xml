@@ -114,6 +114,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${base.project.groupId}</groupId>
+				<artifactId>graphene-dao-titan</artifactId>
+				<version>${base.project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${base.project.groupId}</groupId>
 				<artifactId>graphene-dao-sql</artifactId>
 				<version>${base.project.version}</version>
 			</dependency>

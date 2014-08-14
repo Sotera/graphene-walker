@@ -126,7 +126,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 					//idNode.addProperty("color", "green");
 					idNode.setColor("#00FF00");
 				}
-				if (nodeType == G_CanonicalPropertyType.EMAIL) {
+				if (nodeType == G_CanonicalPropertyType.EMAIL_ADDRESS) {
 					//idNode.addProperty("color", "aqua");
 					idNode.setColor("#0088FF");
 				}
@@ -145,7 +145,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 					if (nodeType == G_CanonicalPropertyType.PHONE) {
 						rel = G_RelationshipType.HAS_PHONE;
 					}
-					if (nodeType == G_CanonicalPropertyType.EMAIL) {
+					if (nodeType == G_CanonicalPropertyType.EMAIL_ADDRESS) {
 						rel = G_RelationshipType.HAS_EMAIL_ADDRESS;
 					}
 					if (nodeType == G_CanonicalPropertyType.ADDRESS) {
