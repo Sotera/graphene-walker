@@ -42,11 +42,8 @@ public class AppModule {
 
 	public static void contributeApplicationDefaults(
 			MappedConfiguration<String, Object> configuration) {
-		configuration.add(G_SymbolConstants.APPLICATION_NAME, "Graphene-Walker");
-		configuration.add(G_SymbolConstants.APPLICATION_CONTACT,
-				"Example Company");
+		configuration.override(G_SymbolConstants.APPLICATION_NAME, "Graphene-Walker");
 		configuration.override(SecuritySymbols.SUCCESS_URL, "/index");
-		configuration.add(SymbolConstants.APPLICATION_VERSION, "4.0.8");
 	}
 
 	public PropertiesFileSymbolProvider buildColorsSymbolProvider(Logger logger) {
