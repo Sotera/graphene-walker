@@ -1,6 +1,5 @@
 package graphene.walker.model;
 
-import graphene.util.UtilModule;
 import graphene.util.db.DBConnectionPoolService;
 import graphene.util.db.MainDB;
 

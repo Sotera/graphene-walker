@@ -12,8 +12,6 @@ import graphene.services.EventGraphBuilder;
 import graphene.util.validator.ValidationUtils;
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericNode;
-import mil.darpa.vande.generic.V_GraphQuery;
-
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
 
@@ -119,8 +117,8 @@ public class EventGraphBuilderWalkerImpl extends
 			
 			if (key != null && !edgeMap.containsKey(key)) {
 				V_GenericEdge v = new V_GenericEdge(src, target);
-				v.setIdType(G_RelationshipType.HAS_ACCOUNT.name());
-				//v.setLabel(G_RelationshipType.HAS_ACCOUNT.name());
+				v.setIdType(G_RelationshipType.OWNER_OF.name());
+				//v.setLabel(G_RelationshipType.OWNER_OF.name());
 				String subject = p.getTrnSubjStr();
 				String payload = p.getTrnValueStr();
 				String label = subject;
@@ -136,7 +134,7 @@ public class EventGraphBuilderWalkerImpl extends
 				}
 				
 				v.setLabel(label);
-				v.setIdVal(G_RelationshipType.HAS_ACCOUNT.name());
+				v.setIdVal(G_RelationshipType.OWNER_OF.name());
 				long dt = p.getTrnDt().getTime();
 				double value = p.getTrnValueNbr();
 				v.setDoubleValue(value);

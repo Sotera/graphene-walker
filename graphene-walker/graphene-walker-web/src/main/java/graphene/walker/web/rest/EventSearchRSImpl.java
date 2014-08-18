@@ -4,10 +4,10 @@ import graphene.dao.UnifiedCommunicationEventDAO;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import graphene.model.idhelper.PropertyHelper;
 import graphene.model.idl.G_Link;
-import graphene.model.idl.G_LinkTag;
 import graphene.model.idl.G_Property;
 import graphene.model.idl.G_PropertyTag;
 import graphene.model.idl.G_PropertyType;
+import graphene.model.idl.G_RelationshipType;
 import graphene.model.idl.G_SearchTuple;
 import graphene.model.idl.G_SearchType;
 import graphene.model.query.DirectedEventQuery;
@@ -82,7 +82,7 @@ public class EventSearchRSImpl implements EventSearchRS {
 		// // probably null or invalid lats/lons
 		// }
 
-		l.getTags().add(G_LinkTag.EVENT);
+		l.getTags().add(G_RelationshipType.IN_EVENT);
 		l.setProperties(properties);
 		l.setDirected(true);
 		return l;

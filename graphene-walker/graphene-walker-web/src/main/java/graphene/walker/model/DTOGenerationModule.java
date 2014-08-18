@@ -1,14 +1,10 @@
 package graphene.walker.model;
 
 import graphene.model.idl.G_SymbolConstants;
-import graphene.util.ColorUtil;
 import graphene.util.db.DBConnectionPoolService;
 import graphene.util.db.JDBCUtil;
 import graphene.util.db.MainDB;
 import graphene.util.db.SecondaryDB;
-import graphene.util.fs.DiskCache;
-import graphene.util.fs.KryoDiskCache;
-
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;

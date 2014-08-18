@@ -1,7 +1,6 @@
 package graphene.walker.ingest.titan;
 
 import graphene.dao.titan.BlueprintImporter;
-import graphene.ingest.neo4j.G_CanonicalIndexNames;
 import graphene.model.idl.G_CanonicalPropertyType;
 import graphene.model.idl.G_LinkTag;
 

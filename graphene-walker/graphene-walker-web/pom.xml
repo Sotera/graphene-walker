@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>graphene-walker</groupId>
 		<artifactId>graphene-walker</artifactId>
-		<version>4.0.8-SNAPSHOT</version>
+		<version>4.0.9-SNAPSHOT</version>
 	</parent>
 	<artifactId>graphene-walker-web</artifactId>
 	<packaging>war</packaging>

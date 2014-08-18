@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>graphene-walker</groupId>
 		<artifactId>graphene-walker</artifactId>
-		<version>4.0.8-SNAPSHOT</version>
+		<version>4.0.9-SNAPSHOT</version>
 	</parent>
 	<artifactId>graphene-walker-ingest</artifactId>
 	<description>Ingest scripts and utilities that should not be deployed on a web server.</description>
@@ -30,7 +30,7 @@
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-dao-neo4j</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-dao-titan</artifactId>
 		</dependency>

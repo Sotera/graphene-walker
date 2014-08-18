@@ -2,15 +2,11 @@ package graphene.walker.web.services;
 
 import graphene.dao.EntityRefDAO;
 import graphene.dao.TransactionDAO;
-import graphene.dao.sql.DAOSQLModule;
-import graphene.walker.dao.WalkerDAOModule;
-import graphene.walker.model.graphserver.GraphServerModule;
 import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import graphene.model.query.EntityQuery;
 import graphene.model.query.EventQuery;
 import graphene.services.PropertyGraphBuilder;
-import graphene.util.UtilModule;
 import graphene.util.db.DBConnectionPoolService;
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericGraph;
