@@ -3,7 +3,7 @@ package graphene.walker.ingest.titan;
 import graphene.dao.TransactionDAO;
 import graphene.dao.titan.BlueprintImporter;
 import graphene.model.idl.G_CanonicalPropertyType;
-import graphene.model.idl.G_LinkTag;
+import graphene.model.idl.G_RelationshipType;
 import graphene.util.G_CallBack;
 import graphene.util.UtilModule;
 import graphene.walker.dao.WalkerDAOModule;
@@ -16,6 +16,7 @@ import org.apache.tapestry5.ioc.RegistryBuilder;
 import org.elasticsearch.common.collect.Iterables;
 
 import com.thinkaurelius.titan.core.TitanGraph;
+import com.tinkerpop.blueprints.Edge;
 import com.tinkerpop.blueprints.TransactionalGraph;
 import com.tinkerpop.blueprints.Vertex;
 import com.tinkerpop.blueprints.util.wrappers.batch.BatchGraph;
@@ -24,18 +25,18 @@ public class EmailImporter implements BlueprintImporter {
 
 	@Override
 	public void CreateSchema(TitanGraph g) {
-		if (g.getType(G_CanonicalPropertyType.EMAIL_ADDRESS.name()) == null) {
-			g.makeKey(G_CanonicalPropertyType.EMAIL_ADDRESS.name())
-					.dataType(String.class).indexed(Vertex.class)
-					.indexed("search", Vertex.class).unique().make();
-			g.makeKey(G_CanonicalPropertyType.PAYLOAD.name())
-					.dataType(String.class).make();
-			g.makeKey(G_CanonicalPropertyType.NGRAM.name())
-					.dataType(String.class).unique().make();
-			g.makeLabel(G_LinkTag.SENT.name());
-			g.makeLabel(G_LinkTag.TO.name());
-			g.makeLabel(G_LinkTag.CC.name());
-			g.makeLabel(G_LinkTag.BCC.name());
+		if (!g.containsVertexLabel(G_CanonicalPropertyType.EMAIL_ADDRESS.name())) {
+			g.createKeyIndex(G_CanonicalPropertyType.EMAIL_ADDRESS.name(),
+					Vertex.class);
+			g.createKeyIndex(G_CanonicalPropertyType.PAYLOAD.name(),
+					Vertex.class);
+			g.createKeyIndex(G_CanonicalPropertyType.NGRAM.name(), Vertex.class);
+			g.createKeyIndex(G_CanonicalPropertyType.NAME.name(), Vertex.class);
+
+			g.createKeyIndex(G_RelationshipType.SENT.name(), Edge.class);
+			g.createKeyIndex(G_RelationshipType.EMAIL_TO.name(), Edge.class);
+			g.createKeyIndex(G_RelationshipType.EMAIL_CC.name(), Edge.class);
+			g.createKeyIndex(G_RelationshipType.EMAIL_BCC.name(), Edge.class);
 		}
 	}
 

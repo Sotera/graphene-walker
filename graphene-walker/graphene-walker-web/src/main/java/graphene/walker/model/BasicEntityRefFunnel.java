@@ -32,4 +32,10 @@ public class BasicEntityRefFunnel implements
 
 		return b;
 	}
+
+	@Override
+	public WalkerEntityref100 to(BasicEntityRef f) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
