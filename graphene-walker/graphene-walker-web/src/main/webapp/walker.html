@@ -9,9 +9,9 @@
 
 <!-- CSS -->
 	<!-- MFM COMMENTED OUT <link type="text/css" href="resources/css/cssjit/base.css" rel="stylesheet" /> -->
-	<link type="text/css" href="core/resources/css/cssjit/ForceDirected.css" rel="stylesheet" />
-	<link type="text/css" href="core/extjs/resources/css/ext-all.css"  rel="stylesheet"  />
-	<link type="text/css" href="core/extjs/ux/css/CheckHeader.css"  rel="stylesheet"  />
+	<!-- <link type="text/css" href="core/resources/css/cssjit/ForceDirected.css" rel="stylesheet" /> -->
+	<link type="text/css" href="core/js/libs/extjs/resources/css/ext-all.css"  rel="stylesheet"  />
+	<link type="text/css" href="core/js/libs/extjs/ux/css/CheckHeader.css"  rel="stylesheet"  />
 
     <style type="text/css">
 			x-grid-cell-first {
@@ -75,21 +75,15 @@
 		  }
     </style>
 
-<!-- THIRD PARTY -->
-    <script type="text/javascript" src="core/extjs/ext-all-debug.js"></script>
-    <script type="text/javascript" src="core/extjs/ux/CheckColumn.js"></script>
-    <script type="text/javascript" src="js/d3/d3.v2.js"></script>
+	<!-- THIRD PARTY -->
+    <script type="text/javascript" src="core/js/libs/extjs/ext-all-debug.js"></script>
+    <script type="text/javascript" src="core/js/libs/extjs/ux/CheckColumn.js"></script>
+    <script type="text/javascript" src="core/js/libs/d3/d3.v2.js"></script>
 
-    <!-- REMOVED the jit used by infoVis when all graphs use cytoscape -->
-	<!--<script type="text/javascript" src="js/Jit/jit.js"></script>-->
-
-         <!-- Cytoscape.js library for the Graph -->
-        <script src="jquery/jquery.min.js"></script>
-        <script src="core/js/cytoscape/cytoscape.js"></script>
-<!--
-        <script src="js/cytoscape/cytoscape.min.js"></script>
--->
-        <script src="core/js/cytoscape/arbor.js"></script>
+	 <!-- Cytoscape.js library for the Graph -->
+	<script src="core/js/libs/jquery/jquery-2.0.3.js"></script>
+	<script src="core/js/libs/cytoscape-2.2.12/cytoscape.js"></script>
+	<script src="core/js/libs/cytoscape-2.2.12/arbor.js"></script>
 
 	<script type="text/javascript">
 		var canUseD3 = true;
@@ -148,33 +142,32 @@
 </script>
 
 
-<!-- OUR SHARED TOOLS -->
-	<script type="text/javascript" src="js/shared/utils.js"></script>
-	<!-- REMOVED the infoVis when all graphs use cytoscape -->
-        <!--<script type="text/javascript" src="js/shared/infoVisGraphSubs.js"></script>-->
-
-    <script type="text/javascript" src="js/shared/formutils.js"></script>
-    <script type="text/javascript" src="js/shared/dateGroup.js"></script>
-    <script type="text/javascript" src="js/shared/histogram.js"></script>
-    <script type="text/javascript" src="js/shared/interactiond3.js"></script>
-    <script type="text/javascript" src="js/shared/scatterplotd3.js"></script>
-     <script type="text/javascript" src="js/shared/cytoGraphSubs.js"></script>
-     <script type="text/javascript" src="js/shared/cytoOverrides.js"></script>
-    <script type="text/javascript" src="js/shared/graphUtils.js"></script>
-        <script type="text/javascript" src="js/shared/WalkerLegendDefs.js"></script>
-	<script type="text/javascript" src="js/shared/graphSettings.js"></script>
-	<script type="text/javascript" src="js/shared/TLCharts.js"></script>
-        <script type="text/javascript" src="js/shared/gridFilterSettings.js"></script>
-        <script type="text/javascript" src="js/shared/filterSettings.js"></script>
-        <script type="text/javascript" src="js/shared/filterSettings2.js"></script>
-        <script type="text/javascript" src="js/shared/userDefinedSession.js"></script>
-        <script type="text/javascript" src="js/shared/exportDialog.js"></script>
-        <script type="text/javascript" src="js/shared/importDialog.js"></script>
-        <script type="text/javascript" src="js/shared/ActivityLogger.js"></script>
-        <script type="text/javascript" src="js/shared/nodeActions.js"></script>
-        <script type="text/javascript" src="js/shared/graphLayoutMenu.js"></script>
-        <script type="text/javascript" src="js/shared/graphManagerMenu.js"></script>
-        <script type="text/javascript" src="js/shared/DetailsViewer.js"></script>
+	<!-- OUR SHARED TOOLS -->
+	<script type="text/javascript" src="core/js/cmp/shared/utils.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/formutils.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/dateGroup.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/histogram.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/cytoGraphSubs.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/cytoOverrides.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/graphUtils.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/graphSettings.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/TLCharts.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/gridFilterSettings.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/filterSettings.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/filterSettings2.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/userDefinedSession.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/exportDialog.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/importDialog.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/ActivityLogger.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/nodeActions.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/graphLayoutMenu.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/graphManagerMenu.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
+	
+	<!-- Shared tools overrides -->
+	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
+	<script type="text/javascript" src="js/shared/scatterplotd3.js"></script>
+	<script type="text/javascript" src="js/shared/WalkerLegendDefs.js"></script>
 
 	<script type="text/javascript">
 //We don't need to know the absolute path or the deployment context.  The prefix is always just rest/
@@ -511,46 +504,57 @@
                 }
 
 	</script>
+	
+	<!-- Might not be using these two anymore -->
     <script type="text/javascript" src="CSEARCH/js/CS_Search.js"></script>
-
 	<script type="text/javascript" src="CSEARCH/js/CS_Frame.js"></script>
 
-	<script type="text/javascript" src="datasets/js/dataSourceLister.js"></script>
-	<script type="text/javascript" src="entitysearch/js/Entity_Search.js"></script>
-	<script type="text/javascript" src="entitysearch/js/Entity_List_Grid.js"></script>
-	<script type="text/javascript" src="entitysearch/js/Entity_Name_List.js"></script>
-	<script type="text/javascript" src="entitysearch/js/Entity_Search_Frame.js"></script>
+	<script type="text/javascript" src="core/js/cmp/datasets/js/dataSourceLister.js"></script>
+	
+	<!-- Entity Search common -->
+	<script type="text/javascript" src="core/js/cmp/entitysearch/js/Entity_Search.js"></script>
+	<script type="text/javascript" src="core/js/cmp/entitysearch/js/Entity_List_Grid.js"></script>
+	<script type="text/javascript" src="core/js/cmp/entitysearch/js/Entity_Name_List.js"></script>
+	<script type="text/javascript" src="core/js/cmp/entitysearch/js/Entity_Search_Frame.js"></script>
 
-    <script type="text/javascript" src="TransactionsGrid/js/TXN_HeaderPanel.js"></script>
-    <script type="text/javascript" src="TransactionsGrid/js/TXN_Menu.js"></script>
-    <script type="text/javascript" src="TransactionsGrid/js/TXN_Grid.js"></script>
-    <script type="text/javascript" src="TransactionsGrid/js/TXN_Search.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/Walker_timeline.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/Walker_timelineButtons.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/Walker_timelinePanel.js"></script>
+	<!-- TransactionsGrid common -->
+    <script type="text/javascript" src="core/js/cmp/TransactionsGrid/js/TXN_HeaderPanel.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransactionsGrid/js/TXN_Menu.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransactionsGrid/js/TXN_Grid.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransactionsGrid/js/TXN_Search.js"></script>
+	<script type="text/javascript" src="core/js/cmp/TransactionsGrid/js/TXN_Frame.js"></script>
+	
+	<!-- TransactionsGrid overrides -->
 	<script type="text/javascript" src="TransactionsGrid/js/TXN_Ledger.js"></script>
-	<script type="text/javascript" src="TransactionsGrid/js/TXN_Frame.js"></script>
-
-
-    <script type="text/javascript" src="TransfersGrid/js/TFR_HeaderPanel.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/TFR_Menu.js"></script>
+	
+	<!-- TransfersGrid common -->
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/Walker_timeline.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/Walker_timelineButtons.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/Walker_timelinePanel.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_HeaderPanel.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_Menu.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_Search.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_Ledger.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_Charts.js"></script>
+    <script type="text/javascript" src="core/js/cmp/TransfersGrid/js/TFR_Frame.js"></script>
+	
+	<!-- TransfersGrid overrides -->
     <script type="text/javascript" src="TransfersGrid/js/TFR_Grid.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/TFR_Search.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/TFR_Ledger.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/TFR_Charts.js"></script>
-    <script type="text/javascript" src="TransfersGrid/js/TFR_Frame.js"></script>
 
-    <script type="text/javascript" src="entitygraph/js/EntityGraphToolBar.js"></script>
-    <script type="text/javascript" src="entitygraph/js/EntityGraph.js"></script>
-	<script type="text/javascript" src="entitygraph/js/EntityGraphRightPanels.js"></script>
+	<!-- EntityGraph common -->
+    <script type="text/javascript" src="core/js/cmp/entitygraph/js/EntityGraphToolBar.js"></script>
+    <script type="text/javascript" src="core/js/cmp/entitygraph/js/EntityGraph.js"></script>
+	<script type="text/javascript" src="core/js/cmp/entitygraph/js/EntityGraphRightPanels.js"></script>
 
-	<script type="text/javascript" src="TransactionsGraph/js/TXN_GraphToolBar.js"></script>
-	<script type="text/javascript" src="TransactionsGraph/js/TXN_GraphNodeDisplay.js"></script>
-	<script type="text/javascript" src="TransactionsGraph/js/TXN_Graph.js"></script>
-	<script type="text/javascript" src="TransactionsGraph/js/TXN_GraphFrame.js"></script>
+	<!-- TransactionsGraph common -->
+	<script type="text/javascript" src="core/js/cmp/TransactionsGraph/js/TXN_GraphToolBar.js"></script>
+	<script type="text/javascript" src="core/js/cmp/TransactionsGraph/js/TXN_GraphNodeDisplay.js"></script>
+	<script type="text/javascript" src="core/js/cmp/TransactionsGraph/js/TXN_Graph.js"></script>
+	<script type="text/javascript" src="core/js/cmp/TransactionsGraph/js/TXN_GraphFrame.js"></script>
 
-	<script type="text/javascript" src="entitytab/js/EntityDetails.js"></script>
-	<script type="text/javascript" src="entitytab/js/entityTab.js"></script>
+	<!-- EntityTab common -->
+	<script type="text/javascript" src="core/js/cmp/entitytab/js/EntityDetails.js"></script>
+	<script type="text/javascript" src="core/js/cmp/entitytab/js/entityTab.js"></script>
 
 </head>
 

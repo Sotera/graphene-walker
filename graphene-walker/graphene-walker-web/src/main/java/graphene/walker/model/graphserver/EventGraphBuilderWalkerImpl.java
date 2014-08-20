@@ -1,5 +1,7 @@
 package graphene.walker.model.graphserver;
 
+import java.util.Iterator;
+
 import graphene.dao.EntityRefDAO;
 import graphene.dao.IdTypeDAO;
 import graphene.dao.TransactionDAO;
@@ -51,7 +53,7 @@ public class EventGraphBuilderWalkerImpl extends
 
 		String s_acno = p.getSenderId().toString();
 		String s_acname = p.getSenderValueStr();
-
+		
 		String t_acno = p.getReceiverId().toString();
 		String t_acname = p.getReceiverValueStr();
 
@@ -59,14 +61,6 @@ public class EventGraphBuilderWalkerImpl extends
 		if (ValidationUtils.isValid(s_acno)) {
 			src = nodeList.getNode(s_acno);
 			if (src == null) {
-				// EntityRefQuery eq = new EntityRefQuery();
-				// G_SearchTuple<String> est = new G_SearchTuple<>();
-				// est.setValue(s_acno);
-				// est.setSearchType(G_SearchType.COMPARE_EQUALS);
-				// est.setFamily(G_CanonicalPropertyType.ACCOUNT);
-				// eq.addAttribute(est);
-				//List listOfProperties = propertyDAO.findByQuery(eq);
-				
 				// #F08080 is coral
 				// #90EE90 is pale green
 				// #22FF22 is vibrant green
@@ -78,13 +72,7 @@ public class EventGraphBuilderWalkerImpl extends
 				src.setValue(s_acno);
 				src.setLabel(s_acname);
 				src.setColor("#22FF22"); // "#F08080" is coral
-				//for (s)
-				// value type is "customer"
-				//src.addProperty("Account Number", s_acno);
-				//src.addProperty("Account Owner", s_acname);
-				//src.addProperty("background-color", "red");
-				//src.addProperty("color", "red");
-
+				
 				unscannedNodeList.add(src);
 				nodeList.addNode(src);
 			}
@@ -104,7 +92,7 @@ public class EventGraphBuilderWalkerImpl extends
 				//target.addProperty("Account Number", t_acno);
 				//target.addProperty("Account Owner", t_acname);
 				//target.addProperty("color", "red");
-
+				
 				unscannedNodeList.add(target);
 				nodeList.addNode(target);
 			}
@@ -153,6 +141,23 @@ public class EventGraphBuilderWalkerImpl extends
 
 		return true;
 	}
-
-
+	
+	@Override
+	public void performPostProcess(V_GraphQuery graphQuery) {
+		Iterator<String> iter = graphQuery.getSearchIds().iterator();
+		
+		logger.debug("Performing post process");
+		String color = "red";
+		
+		while (iter.hasNext()) {
+			String id = iter.next();
+			try {
+				V_GenericNode searched = nodeList.getNode(id);
+				searched.setColor(color);
+				logger.debug("Node with id(" + id + ") is now " + color);
+			} catch (Exception e) {
+				logger.error("Could not find node with id = " + id);
+			}
+		}
+	}
 }
