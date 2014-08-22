@@ -83,6 +83,7 @@
 	 <!-- Cytoscape.js library for the Graph -->
 	<script src="core/js/libs/jquery/jquery-2.0.3.js"></script>
 	<script src="core/js/libs/cytoscape-2.2.12/cytoscape.js"></script>
+	<script src="core/js/libs/cytoscape-2.2.12/cytoscape.js-cxtmenu.js"></script>
 	<script src="core/js/libs/cytoscape-2.2.12/arbor.js"></script>
 
 	<script type="text/javascript">
@@ -298,8 +299,11 @@
 
 		   	Ext.QuickTips.init();
 		   	Ext.tip.QuickTipManager.init();
+			
 		   	// disable the browser from acting on right-click
-		   	Ext.getBody().on("contextmenu", Ext.emptyfn, null, {preventDefault:true});
+		   	Ext.getBody().on("contextmenu", function(e) {
+				// do nothing
+			});
 
    			Ext.create("Ext.container.Viewport", {
                     layout:'border',
