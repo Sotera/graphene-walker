@@ -301,9 +301,7 @@
 		   	Ext.tip.QuickTipManager.init();
 			
 		   	// disable the browser from acting on right-click
-		   	Ext.getBody().on("contextmenu", function(e) {
-				// do nothing
-			});
+		    Ext.getBody().on("contextmenu", function() {/* do nothing by default */}, null, {preventDefault: true});
 
    			Ext.create("Ext.container.Viewport", {
                     layout:'border',
