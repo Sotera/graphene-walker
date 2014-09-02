@@ -14,65 +14,120 @@
 	<link type="text/css" href="core/js/libs/extjs/ux/css/CheckHeader.css"  rel="stylesheet"  />
 
     <style type="text/css">
-			x-grid-cell-first {
-			  overflow: hidden;
-			  -o-text-overflow: ellipsis;
-			  text-overflow: ellipsis;
-			  padding: 2px 6px 3px;
-			  white-space: nowrap; }
+		x-grid-cell-first {
+			overflow: hidden;
+			-o-text-overflow: ellipsis;
+			text-overflow: ellipsis;
+			padding: 2px 6px 3px;
+			white-space: nowrap; 
+		}
+		
 		#EntityGraph {
 			background-color: lightyellow;
 			color: 'black';
 		}
+		
 		#TransfersGraph {
 			background-color: lightyellow;
 			color: 'black';
 		}
+		
 		x-busy-tab {
-		    background-color: lightyellow;
+			background-color: lightyellow;
 		}
+		
 		x-hasdata-tab {
-		    background-color: red;
-		    color: white;
+			background-color: red;
+			color: white;
 		}
+		
 		x-nodata-tab {
-		    background-color: lightblue;
+			background-color: lightblue;
 		}
-
-	 	  .groupcolor0 .account{
-	 	  	 color:black;
-	 	  }
-	 	  .groupcolor1  .account{
-	 	     color: red;
-	 	  }
-	 	  .groupcolor2  .account{
-	 	     color: blue;
-	 	  }
-	 	  .groupcolor3  .account{
-	 	     color: green;
-	 	  }
-	 	  .groupcolor4  .account{
-	 	     color: orange;
-	 	  }
-
-		  .bars rect {
-		     fill: steelblue;
-		  }
-
-		  .axis text {
-		     font: 10px sans-serif;
-		  }
-
-		  .axis path, .axis line {
-		    fill: none;
-		    stroke: #000;
-		    shape-rendering: crispEdges;
-		  }
-		  
-		  .grid .tick {
+		
+		.groupcolor0 .account{
+			color:black;
+		}
+		
+		.groupcolor1  .account{
+			color: red;
+		}
+		
+		.groupcolor2  .account{
+			color: blue;
+		}
+		
+		.groupcolor3  .account{
+			color: green;
+		}
+		
+		.groupcolor4  .account{
+			color: orange;
+		}
+		
+		.bars rect {
+			fill: steelblue;
+		}
+		
+		.axis text {
+			font: 10px sans-serif;
+		}
+		
+		.axis path, .axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+		 
+		.grid .tick {
 			stroke: lightgrey;
 			stroke-opacity: 0.75;
-		  }
+		}
+
+		.grid_default_btn {
+			background-position: center center;
+			background-image: url(/graphene-walker-web/core/images/grid_icon.png) !important;
+		}
+
+		.hierarch_circle_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/hierarchy_circle_icon.png) !important;
+		}
+
+		.hierarch_default_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/hierarchy_icon.png) !important;
+		}
+
+		.cose_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/cose_animated_icon.png) !important;
+		}
+
+		.cose_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/cose_icon.png) !important;
+		}
+
+		.arbor_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_animated_icon.png) !important;
+		}
+
+		.arbor_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_icon.png) !important;
+		}
+
+		.arbor_wheel_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_wheel_animated_icon.png) !important;
+		}
+
+		.arbor_wheel_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_wheel_icon.png) !important;
+		}
     </style>
 
 	<!-- THIRD PARTY -->
@@ -164,6 +219,7 @@
 	<script type="text/javascript" src="core/js/cmp/shared/graphLayoutMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/graphManagerMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/GraphToolbar.js"></script>
 	
 	<!-- Shared tools overrides -->
 	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
