@@ -14,6 +14,8 @@ import graphene.services.EventGraphBuilder;
 import graphene.util.validator.ValidationUtils;
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericNode;
+import mil.darpa.vande.generic.V_GraphQuery;
+
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
 
