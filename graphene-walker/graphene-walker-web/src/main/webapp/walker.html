@@ -189,6 +189,7 @@
 
 		Config.appRoot = "/graphene-walker-web";
 		Config.imagesUrl = Config.appRoot + "/images/";
+		Config.coreImagesUrl = config.appRoot + "/core/images/";
 		Config.helpIcon = Config.imagesUrl + "HelpIcon_solid.gif";
         // Icons for filter animation controls
         Config.PlayReverse = Config.imagesUrl + "PlayReverse_Hover14.png";
@@ -220,11 +221,11 @@
 	<script type="text/javascript" src="core/js/cmp/shared/graphManagerMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/GraphToolbar.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/legendDefs.js"></script>
 	
 	<!-- Shared tools overrides -->
 	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
 	<script type="text/javascript" src="js/shared/scatterplotd3.js"></script>
-	<script type="text/javascript" src="js/shared/WalkerLegendDefs.js"></script>
 
 	<script type="text/javascript">
 //We don't need to know the absolute path or the deployment context.  The prefix is always just rest/
@@ -381,7 +382,19 @@
    			}); // viewport
 
             // MFM create legend for all tabs that need them
-            GLegend.createLegend("default", null);
+            // GLegend is global and accessible anywhere in the app
+			GLegend = new Legend();
+			GLegend.addLegendItems([
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_red.png", text: "Item you searched for."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_palegreen.png", text: "Email Address."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_gray.png", text: "Shared Attributes."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_darkblue.png", text: "Selected Item(s)."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_magenta.png", text: "Expanded Nodes."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_blackline.png", text: "Selected Link."}
+			]);
+			// if you only have one legend type in the app, setting the default makes it easier to access without having to
+			// remember the key "graph_legend" anywhere else.
+			GLegend.setDefaultGroupName("graph_legend");
 
             makeESTab(); // Entity Search
             getTabFrame().setActiveTab(getESFrame());
@@ -622,3 +635,4 @@
 <div id="log"></div>
 -->
 </body>
+</html>
