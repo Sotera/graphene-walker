@@ -64,10 +64,10 @@ public class ImportRunner {
 		// g.createKeyIndex(G_CanonicalPropertyType.NGRAM.name(), Vertex.class);
 		// g.createKeyIndex(G_CanonicalPropertyType.NAME.name(), Vertex.class);
 		//
-		// g.createKeyIndex(G_RelationshipType.SENT.name(), Edge.class);
-		// g.createKeyIndex(G_RelationshipType.EMAIL_TO.name(), Edge.class);
-		// g.createKeyIndex(G_RelationshipType.EMAIL_CC.name(), Edge.class);
-		// g.createKeyIndex(G_RelationshipType.EMAIL_BCC.name(), Edge.class);
+		// g.createKeyIndex(G_CanonicalRelationshipType.SENT.name(), Edge.class);
+		// g.createKeyIndex(G_CanonicalRelationshipType.EMAIL_TO.name(), Edge.class);
+		// g.createKeyIndex(G_CanonicalRelationshipType.EMAIL_CC.name(), Edge.class);
+		// g.createKeyIndex(G_CanonicalRelationshipType.EMAIL_BCC.name(), Edge.class);
 		// }
 
 		BlueprintImporter[] importers = new BlueprintImporter[] { new EmailImporter(),
