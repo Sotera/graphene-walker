@@ -27,6 +27,7 @@ import graphene.walker.model.memorydb.WalkerMemoryDB;
 import graphene.model.Funnel;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
+import graphene.model.view.entities.DefaultEntityLightFunnel;
 import graphene.services.EntityDAOImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
@@ -86,7 +87,8 @@ public class WalkerDAOModule {
 
 
 		binder.bind(IMemoryDB.class, WalkerMemoryDB.class);
-		
+		binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
+				EntityLightFunnelMarker.class);
 		// Wiring for user services
 		binder.bind(EntityGraphDAO.class, EntityGraphDAONeo4JEImpl.class);
 		binder.bind(GroupDAO.class, GroupDAONeo4JEImpl.class);
