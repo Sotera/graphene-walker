@@ -278,24 +278,43 @@ public class EntityRefDAOImpl extends
 				String value = est.getValue();
 				if (family.equals(G_CanonicalPropertyType.ACCOUNT)) {
 					logger.debug("finding account types that match " + values);
-					results.addAll(memDb.getRowsForAccount(value));
-				} else if (family
-						.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
-					logger.debug("finding customer number types that match "
-							+ values);
-					results.addAll(memDb.getRowsForCustomer(est.getValue()));
+					try {
+						results.addAll(memDb.getRowsForAccount(value));
+					} catch (Exception e) {
+						logger.error("Error getting accounts that match " + values +". Error: " + e.getMessage());
+					}
+				} else if (family.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+					logger.debug("finding any types that match " + values);
+					try {
+						results.addAll(memDb.getRowsForCustomer(est.getValue()));
+					} catch (Exception e) {
+						logger.error("Error getting customer numbers that match " + values +". Error: " + e.getMessage());
+					}
+				} else if (family.equals(G_CanonicalPropertyType.NAME)) {
+					logger.debug("finding any names that match " + values);
+					try {
+						// FIXME: get rows from memDb using NAME
+						//results.addAll(memDb.getRowsForIdentifier(value, family.getValueString()));
+					} catch (Exception e) {
+						logger.error("Error getting names that match " + values + ". Error: " + e.getMessage());
+					}
 				} else if (family.equals(G_CanonicalPropertyType.ANY)) {
 					logger.debug("finding any types that match " + values);
-					results.addAll(memDb.getRowsForIdentifier(value,
-							family.getValueString()));
-					results.addAll(memDb.getRowsForAccount(value));
-					results.addAll(memDb.getRowsForCustomer(value));
+					try {
+						results.addAll(memDb.getRowsForIdentifier(value, family.getValueString()));
+						results.addAll(memDb.getRowsForAccount(value));
+						results.addAll(memDb.getRowsForCustomer(value));
+					} catch (Exception e) {
+						logger.error("Error getting anything that matches " + values +". Error: " + e.getMessage());
+					}
 				} else {
-					logger.debug("finding identifier types that match "
-							+ values);
-					// just identifiers --djue
-					results.addAll(memDb.getRowsForIdentifier(est.getValue(),
-							est.getFamily().getValueString()));
+					logger.debug("finding identifier types that match " + values);
+					try {
+						// just identifiers --djue
+						results.addAll(memDb.getRowsForIdentifier(est.getValue(), est.getFamily().getValueString()));
+					} catch (Exception e) {
+						logger.error("Error finding identifier types that match " + values +". Error: " + e.getMessage());
+					}
 				}
 
 			}
