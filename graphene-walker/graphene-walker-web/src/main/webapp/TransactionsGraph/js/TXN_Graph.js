@@ -72,10 +72,10 @@ Ext.define("DARPA.TransactionGraph", {
                 	id:config.id+'-settings'
                 });
                 // Have to delay this call a bit since the Graph Frame (see PB_Frame) is not defined yet
-                var wtimeout3 = window.setTimeout(function() {
-                    window.clearTimeout(wtimeout3);
+                //var wtimeout3 = window.setTimeout(function() {
+                //    window.clearTimeout(wtimeout3);
                     graphSettings.setGraph(self);   // MFM
-                }, 7600);
+                //}, 7600);
                 
                 // MFM The Entity (customer) graph does not have a concept of time - so disable dates and animation
                 var filterSettings = Ext.create("DARPA.FilterSettings", {id:config.id+'-TransactionGraphFilter'});
@@ -155,12 +155,12 @@ Ext.define("DARPA.TransactionGraph", {
                  // END MFM JIRA-29 Additional filter settings
                  // 
                 // Have to delay this call a bit since the Graph Frame (see PB_Frame) is not defined yet
-                var wtimeout2 = window.setTimeout(function() {
-                    window.clearTimeout(wtimeout2);
+                //var wtimeout2 = window.setTimeout(function() {
+                //    window.clearTimeout(wtimeout2);
                     filterSettings.setGraph(self);  // must be self and not this
                     filterSettings.enableTimeFilter(false); // is enabled by default , disable it here 
                     filterSettings.setSearchFieldLabel("Identifier(s)");
-                }, 7000);
+                //}, 7000);
                 
                 var graphContainer = Ext.create("Ext.Container", {
                             width: 'auto', 
@@ -350,13 +350,10 @@ Ext.define("DARPA.TransactionGraph", {
                         var config = { width: self.getWidth(), height: self.getHeight(),
                                        rightBorder: 320, leftBorder: 5, topBorder: 5, botBorder: 80
                         };
-                        
-			self.GraphVis.initGraph(config, self);  // initialize the graph display lib
-                        var dgt = window.setTimeout(function() {
-                            window.clearTimeout(dgt);
-                            self.GraphVis.zoom(0.8);
-                            self.showjson(self.prevLoadParams.number);
-                        },5000);        
+            // initialize the graph display lib              
+			self.GraphVis.initGraph(config, self, function() {
+                self.showjson(self.prevLoadParams.number);
+			});   
 		}
 		else {
                         self.showjson(self.prevLoadParams.number);

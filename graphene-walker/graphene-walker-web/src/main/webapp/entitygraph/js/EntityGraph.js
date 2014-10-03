@@ -130,10 +130,10 @@ Ext
 
 						// Have to delay this call a bit since the Graph Frame
 						// (see PB_Frame) is not defined yet
-						var wtimeout3 = window.setTimeout(function() {
-							window.clearTimeout(wtimeout3);
+						//var wtimeout3 = window.setTimeout(function() {
+						//	window.clearTimeout(wtimeout3);
 							graphSettings.setGraph(self); // MFM
-						}, 7000);
+						//}, 7000);
 
 						// MFM The Entity (customer) graph does not have a
 						// concept of time - so disable dates and animation
@@ -216,33 +216,15 @@ Ext
 						};
 						var addFilterFields = [ addfilter1, addfilter2,
 								addfilter3, addfilter4, addfilter5, addfilter6 ];
-						var ret = filterSettings
-								.setAdditionalFields(addFilterFields);
+						var ret = filterSettings.setAdditionalFields(addFilterFields);
 						// DEBUG
 						// console.log("filterSettings.setAdditionalFields
 						// returned = " + ret);
 
-						// END MFM JIRA-29 Additional filter settings
-						// 
-						// Have to delay this call a bit since the Graph Frame
-						// (see PB_Frame) is not defined yet
-						var wtimeout2 = window
-								.setTimeout(
-										function() {
-											window.clearTimeout(wtimeout2);
-											filterSettings.setGraph(self);
-											filterSettings
-													.enableTimeFilter(false); // is
-											// enabled
-											// by
-											// default
-											// ,
-											// disable
-											// it
-											// here
-											filterSettings
-													.setSearchFieldLabel("Identifier(s)");
-										}, 7500);
+						
+						filterSettings.setGraph(self);
+						filterSettings.enableTimeFilter(false); // is enabled by default, disable it here
+						filterSettings.setSearchFieldLabel("Identifier(s)");
 
 						var graphContainer = Ext.create("Ext.Container", { // MFM
 							width : 'auto',
@@ -320,8 +302,7 @@ Ext
 						var hops = self.getSettings().getMaxHops();
 						var degree = parseInt(hops) + 1;
 						graphStore.proxy.extraParams.degree = degree;
-						graphStore.proxy.url = Config.entityGraphCSUrl
-								+ 'customer/' + custno;
+						graphStore.proxy.url = Config.entityGraphCSUrl + 'customer/' + custno;
 
 						self.prevLoadParams.searchValue = self.prevLoadParams.value = self.prevLoadParams.prevValue = custno;
 
@@ -369,14 +350,11 @@ Ext
 												// what is already shown
 											} else {
 												self.clear();
-												self
-														.showjson(self.prevLoadParams.value);
+												self.showjson(self.prevLoadParams.value);
 											}
 
 											var nodeCount = self.json.nodes.length;
-											self.appendTabTitle("("
-													+ nodeCount.toString()
-													+ ")");
+											self.appendTabTitle("(" + nodeCount.toString() + ")");
 
 											// if (pb2) {
 											// pb2.updateText(graph.nodes.length
@@ -406,16 +384,11 @@ Ext
 								topBorder : 5,
 								botBorder : 80
 							};
-
-							self.GraphVis.initGraph(config, self); // initialize
-							// the graph
-							// display
-							// lib
-							var dgt = window.setTimeout(function() {
-								window.clearTimeout(dgt);
-								self.GraphVis.zoom(0.8);
+							
+							// initialize the graph display lib
+							self.GraphVis.initGraph(config, self, function() {
 								self.showjson(self.prevLoadParams.value);
-							}, 5000);
+							}); 
 						} else {
 							self.showjson(self.prevLoadParams.value);
 							self.showjson1Hop(false, null);

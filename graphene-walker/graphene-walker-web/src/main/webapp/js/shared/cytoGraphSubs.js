@@ -558,7 +558,7 @@ Ext.define("DARPA.GraphVis",
     //          other params - TBD
     //          
     // owner    - Pointer to the caller's context
-    initGraph: function(config, owner) {
+    initGraph: function(config, owner, onLoadCallback) {
         var scope = this;        
         if (config) {
             if (config.width) {
@@ -642,7 +642,7 @@ Ext.define("DARPA.GraphVis",
                                         // 'width': 20,  
                                         //'height': 20 
                                 }).selector('.toggled-show').css({  // Workaround for showing and hiding edge labels
-                                        'content':'data(amount)'
+                                        'content':'data(label)'
                                 }).selector('.toggled-hide').css({
                                         'content':' '
                                 }).selector('.faded').css({
@@ -652,6 +652,11 @@ Ext.define("DARPA.GraphVis",
                     });
 
                     scope.gv = $("#" + scope.id).cytoscape("get");
+                    
+                    if (onLoadCallback) {
+                    	onLoadCallback();
+                    }
+                    
                     scope.initialized = true;
                     scope.reset();
                    
