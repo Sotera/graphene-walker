@@ -10,7 +10,7 @@ public class BasicEntityRefFunnel implements
 		Funnel<BasicEntityRef, WalkerEntityref100> {
 
 	@Override
-	public BasicEntityRef from(WalkerEntityref100 f) {
+	public BasicEntityRef to(WalkerEntityref100 f) {
 		BasicEntityRef b = new BasicEntityRef();
 		b.setAccountNumber(f.getAccountnumber());
 		b.setAccountType(f.getAccounttype());
@@ -32,4 +32,16 @@ public class BasicEntityRefFunnel implements
 
 		return b;
 	}
+
+	@Override
+	public WalkerEntityref100 from(BasicEntityRef f) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	//@Override
+	//public BasicEntityRef to(WalkerEntityref100 f) {
+	//	// TODO Auto-generated method stub
+	//	return null;
+	//}
 }

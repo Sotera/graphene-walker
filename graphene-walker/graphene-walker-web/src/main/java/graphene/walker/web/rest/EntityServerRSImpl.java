@@ -2,6 +2,7 @@ package graphene.walker.web.rest;
 
 import graphene.dao.DataSourceListDAO;
 import graphene.dao.EntityDAO;
+import graphene.model.idl.G_Entity;
 import graphene.model.query.AdvancedSearch;
 import graphene.model.view.entities.Entity;
 import graphene.model.view.entities.EntityLight;
@@ -68,7 +69,7 @@ public class EntityServerRSImpl implements EntityServerRS {
 		} else {
 			logger.trace(search.getDataSet());
 			search.setFieldsIntoFilters(dataSourceListDAO.getList());
-			List<Entity> entities = entitydao.getEntitiesByAdvancedSearch(search);
+			List<EntityLight> entities = entitydao.getLightEntitiesByAdvancedSearch(search);
 			results.addEntities(entities);
 		}
 		t.logAsCompleted();
@@ -86,7 +87,20 @@ public class EntityServerRSImpl implements EntityServerRS {
 	 */
 	public EntityLight getEntityByID(@PathParam("ID") String id) {
 		logger.debug("Getting entity for id " + id);
-		return new EntityLight(entitydao.getById(id));
+		//EntityLight new_el = new EntityLight();
+		//EntityLight old_el = entitydao.getById(id);
+		
+		//if (old_el != null) {
+		//	new_el.setAccountList(old_el.getAccountList());
+		//	new_el.setAllNames(old_el.getAllNames());
+		//	new_el.setAttributes(old_el.getAttributes());
+		//	new_el.setDatasource_id(old_el.getDatasource_id());
+		//	new_el.setEffectiveName(old_el.getEffectiveName());
+		//	new_el.setId(old_el.getId());
+		//}
+		
+		return entitydao.getById(id);
+		//return new_el;
 	}
 
 }

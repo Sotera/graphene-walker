@@ -8,6 +8,7 @@ import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.QWalkerEntityref100;
 import graphene.model.idl.G_CanonicalPropertyType;
+import graphene.model.idl.G_IdType;
 import graphene.model.idl.G_SearchTuple;
 import graphene.model.idl.G_SearchType;
 import graphene.model.idl.G_SymbolConstants;
@@ -126,16 +127,14 @@ public class EntityRefDAODiskImpl extends
 								.parseIntWithCheck(tuple
 										.getSpecificPropertyType())));
 
-					} else if (!tuple.getFamily().equals(
-							G_CanonicalPropertyType.ANY)) {
+					} else if (!tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ANY.name())) {
 						/*
 						 * A family of ids (a Canonical Property Type) was
 						 * specified (not ANY), which is one of the the
 						 * canonical enum values. Note we have to look up the
 						 * list of specific idTypes that are in this family.
 						 */
-						if (tuple.getFamily().equals(
-								G_CanonicalPropertyType.ACCOUNT)) {
+						if (tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 							/*
 							 * Search just the accountNumber column
 							 */
@@ -155,8 +154,8 @@ public class EntityRefDAODiskImpl extends
 							 * Since we're not searching against the identifiers
 							 * table, we don't filter on id types.
 							 */
-						} else if (tuple.getFamily().equals(
-								G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+						} else if (tuple.getNodeType().getName().equals(
+								G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
 							/*
 							 * Search just the customerNumber column
 							 */
@@ -191,15 +190,15 @@ public class EntityRefDAODiskImpl extends
 							 * type.
 							 */
 							Integer[] idtypes = idTypeDAO
-									.getTypesForFamily(tuple.getFamily());
+									.getTypesForFamily(tuple.getNodeType());
 							if (idtypes != null && idtypes.length > 0) {
 								loopBuilder.and(t.idtypeId.in(idtypes));
 							}
 
 						}
 
-					} else if (tuple.getFamily().equals(
-							G_CanonicalPropertyType.ANY)) {
+					} else if (tuple.getNodeType().getName().equals(
+							G_CanonicalPropertyType.ANY.name())) {
 
 						if (tuple.getSearchType().equals(
 								G_SearchType.COMPARE_EQUALS)) {
@@ -284,28 +283,24 @@ public class EntityRefDAODiskImpl extends
 			List<G_SearchTuple<String>> values = q.getAttributeList();
 			Set<MemRow> results = new HashSet<MemRow>();
 			for (G_SearchTuple<String> est : values) {
-				G_CanonicalPropertyType family = est.getFamily();
+				String family = est.getNodeType().getName();
 				String value = est.getValue();
-
-				if (family.equals(G_CanonicalPropertyType.ACCOUNT)) {
+				
+				if (family.equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 					results.addAll(memDb.getRowsForAccount(value));
-				} else if (family
-						.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+				} else if (family.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
 					results.addAll(memDb.getRowsForCustomer(value));
-				} else if (family.equals(G_CanonicalPropertyType.ANY)) {
+				} else if (family.equals(G_CanonicalPropertyType.ANY.name())) {
 					// logger.debug("finding any types that match " + s);
 					results.addAll(memDb.getRowsForAccount(value));
 					results.addAll(memDb.getRowsForCustomer(value));
-					results.addAll(memDb.getRowsForIdentifier(value,
-							family.getValueString()));
-				} else if (family.equals(G_CanonicalPropertyType.ID)) {
+					results.addAll(memDb.getRowsForIdentifier(value, family));
+				//} else if (family.equals(G_CanonicalPropertyType.)) {
 					// logger.debug("finding id types that match " + s);
-					results.addAll(memDb.getRowsForIdentifier(value,
-							family.getValueString()));
+				//	results.addAll(memDb.getRowsForIdentifier(value, family));
 				} else {
 					// all other families
-					results.addAll(memDb.getRowsForIdentifier(value,
-							family.getValueString()));
+					results.addAll(memDb.getRowsForIdentifier(value, family));
 				}
 
 			}
@@ -329,8 +324,7 @@ public class EntityRefDAODiskImpl extends
 		if (memDb != null && memDb.isLoaded()) {
 			Set<String> results = new HashSet<String>();
 			for (MemRow r : memDb.getRowsForCustomer(cust)) {
-				String s = memDb
-						.getAccountNumberForID(r.entries[IMemoryDB.ACCOUNT]);
+				String s = memDb.getAccountNumberForID(r.entries[IMemoryDB.ACCOUNT]);
 				if (s == null) {
 					logger.error("Could not getAccountNumberForID " + cust
 							+ " in row " + r);
@@ -482,7 +476,7 @@ public class EntityRefDAODiskImpl extends
 		Set<BasicEntityRef> list = new HashSet<BasicEntityRef>(3);
 		try {
 			for (WalkerEntityref100 x : getRowsForCustomer(id)) {
-				list.add(funnel.from(x));
+				list.add(funnel.to(x));
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -684,15 +678,13 @@ public class EntityRefDAODiskImpl extends
 			List<G_SearchTuple<String>> values = q.getAttributeList();
 			Set<MemRow> results = new HashSet<MemRow>();
 			for (G_SearchTuple<String> s : values) {
-				if (s.getFamily().equals(G_CanonicalPropertyType.ACCOUNT)) {
+				if (s.getNodeType().getName().equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 					results.addAll(memDb.getRowsForAccount(s.getValue()));
-				} else if (s.getFamily().equals(
-						G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+				} else if (s.getNodeType().getName().equals(G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
 					results.addAll(memDb.getRowsForCustomer(s.getValue()));
 				} else {
 					// all other families
-					results.addAll(memDb.getRowsForIdentifier(s.getValue(), s
-							.getFamily().getValueString()));
+					results.addAll(memDb.getRowsForIdentifier(s.getValue(), s.getNodeType().getName()));
 				}
 
 			}
@@ -740,12 +732,11 @@ public class EntityRefDAODiskImpl extends
 			// Not yet filtered by family
 			Set<String> results = new HashSet<String>();
 			// Super kludge
-			G_CanonicalPropertyType family = q.getAttributeList().get(0)
-					.getFamily();
+			G_IdType family = q.getAttributeList().get(0).getNodeType();
 			// String family = q.getIdFamily();
 
 			for (String v : values) {
-				if (memDb.isIdFamily(v, family.getValueString()))
+				if (memDb.isIdFamily(v, family.getName()))
 					results.add(v);
 			}
 			return results;
