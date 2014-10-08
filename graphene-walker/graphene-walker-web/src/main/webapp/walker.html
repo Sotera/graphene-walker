@@ -12,6 +12,7 @@
 	<!-- <link type="text/css" href="core/resources/css/cssjit/ForceDirected.css" rel="stylesheet" /> -->
 	<link type="text/css" href="core/js/libs/extjs/resources/css/ext-all.css"  rel="stylesheet"  />
 	<link type="text/css" href="core/js/libs/extjs/ux/css/CheckHeader.css"  rel="stylesheet"  />
+	<link type="text/css" href="core/js/libs/leaflet-0.7.3/leaflet.css" rel="stylesheet" />
 
     <style type="text/css">
 		x-grid-cell-first {
@@ -128,12 +129,20 @@
 			background-position: center center;
 			background-image : url(/graphene-walker-web/core/images/arbor_wheel_icon.png) !important;
 		}
+		
+		.toolbar_help_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/HelpIcon_solid.gif) !important
+		}
     </style>
 
 	<!-- THIRD PARTY -->
     <script type="text/javascript" src="core/js/libs/extjs/ext-all-debug.js"></script>
     <script type="text/javascript" src="core/js/libs/extjs/ux/CheckColumn.js"></script>
     <script type="text/javascript" src="core/js/libs/d3/d3.v2.js"></script>
+    
+    <!-- Debug version of leaflet.js -->
+    <script type="text/javascript" src="core/js/libs/leaflet-0.7.3/leaflet-src.js"></script>
 
 	 <!-- Cytoscape.js library for the Graph -->
 	<script src="core/js/libs/jquery/jquery-2.0.3.js"></script>
@@ -181,6 +190,8 @@
             getUDSessionsByNameUrl: prepath + 'UDsession/getSessionsByName/',    // takes a name
             saveUDSessionUrl: prepath + 'UDsession/save',    // POST - takes JSON
 
+            mapTileUrl: 'http://{s}.tiles.mapbox.com/v3/drdevious.jhjoe8h8/{z}/{x}/{y}.png',
+            
 			dataSourceUrl:	   prepath+'datasources/getAll',
 			restEasy:true,
 			canUseD3: canUseD3,
@@ -189,7 +200,7 @@
 
 		Config.appRoot = "/graphene-walker-web";
 		Config.imagesUrl = Config.appRoot + "/images/";
-		Config.coreImagesUrl = config.appRoot + "/core/images/";
+		Config.coreImagesUrl = Config.appRoot + "/core/images/";
 		Config.helpIcon = Config.imagesUrl + "HelpIcon_solid.gif";
         // Icons for filter animation controls
         Config.PlayReverse = Config.imagesUrl + "PlayReverse_Hover14.png";
@@ -222,6 +233,7 @@
 	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/GraphToolbar.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/legendDefs.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/leafletMapSubs.js"></script>
 	
 	<!-- Shared tools overrides -->
 	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
@@ -626,6 +638,10 @@
 	<!-- EntityTab common -->
 	<script type="text/javascript" src="core/js/cmp/entitytab/js/EntityDetails.js"></script>
 	<script type="text/javascript" src="core/js/cmp/entitytab/js/entityTab.js"></script>
+	
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapPanel.js"></script>
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapToolbar.js"></script>
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapDetailsPanel.js"></script>
 
 </head>
 

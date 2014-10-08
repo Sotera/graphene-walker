@@ -107,10 +107,12 @@ public class IdTypeDAOSQLImpl extends AbstractIdTypeDAO<WalkerIdentifierType100>
 		idType.setIdType_id(id.getIdtypeId());
 		idType.setShortName(id.getShortName());
 		idType.setTableSource(id.getTablesource());
-		idType.setType(G_CanonicalPropertyType.fromValue(id.getFamily()));
-		if (idType.getType() == null) {
-			logger.warn("G_CanonicalPropertyType for " + idType.toString()
-					+ " was null.  This shouldn't happen");
+		//G_CanonicalPropertyType.valueOf(id.getFamily().toUpperCase());
+		
+		// FIXME: idType does not have a setType() method anymore and it does not have setNodeType(), but it still has getNodeType()
+		//idType.setType(G_CanonicalPropertyType.fromValue(id.getFamily()));
+		if (idType.getNodeType() == null) {
+			logger.warn("G_CanonicalPropertyType for " + idType.toString() + " was null.  This shouldn't happen");
 		}
 		return idType;
 	}
