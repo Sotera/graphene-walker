@@ -22,6 +22,7 @@ import graphene.walker.dao.impl.DataSourceListDAOImpl;
 import graphene.walker.dao.impl.EntityRefDAOImpl;
 import graphene.walker.dao.impl.IdTypeDAOSQLImpl;
 import graphene.walker.dao.impl.TransactionDAOSQLImpl;
+import graphene.walker.model.WalkerEntityLightFunnel;
 import graphene.walker.model.memorydb.WalkerMemoryDB;
 import graphene.model.Funnel;
 import graphene.model.idl.G_SymbolConstants;
@@ -81,6 +82,8 @@ public class WalkerDAOModule {
 		// TODO: Make this into a service in the core we can contribute to (for
 		// distributed configuration!)
 		binder.bind(DataSourceListDAO.class, DataSourceListDAOImpl.class);
+		binder.bind(Funnel.class, WalkerEntityLightFunnel.class).withMarker(
+				EntityLightFunnelMarker.class);
 
 
 		binder.bind(IMemoryDB.class, WalkerMemoryDB.class);

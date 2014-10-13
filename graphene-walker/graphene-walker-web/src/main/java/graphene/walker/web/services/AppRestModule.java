@@ -6,6 +6,10 @@ import graphene.rest.ws.EntityServerRS;
 import graphene.rest.ws.EventServerRS;
 import graphene.rest.ws.ExportGraphRS;
 import graphene.rest.ws.GraphmlServerRS;
+<<<<<<< HEAD
+=======
+//import graphene.rest.ws.LedgerFreeTextRS;
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 import graphene.rest.ws.UDSessionRS;
 import graphene.rest.ws.impl.CSGraphServerRSImpl;
 import graphene.rest.ws.impl.DataSourceServerRSImpl;
@@ -34,6 +38,11 @@ public class AppRestModule {
 	public static void bind(ServiceBinder binder) {
 		binder.bind(EntityServerRS.class, EntityServerRSImpl.class);
 		binder.bind(GraphmlServerRS.class, GraphmlServerRSImpl.class);
+<<<<<<< HEAD
+=======
+		// binder.bind(EventServerRS.class, EventServerRSImpl.class);
+		//binder.bind(LedgerFreeTextRS.class, LedgerFreeTextRSImpl.class);
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 		binder.bind(UDSessionRS.class, UDSessionRSImpl.class); // MFM
 		binder.bind(ExportGraphRS.class, ExportGraphRSImpl.class);
 		binder.bind(DataSourceServerRS.class, DataSourceServerRSImpl.class);
@@ -60,6 +69,14 @@ public class AppRestModule {
 		singletons.add(restService);
 	}
 
+<<<<<<< HEAD
+=======
+	//@Contribute(javax.ws.rs.core.Application.class)
+	//public static void contributeApplication(Configuration<Object> singletons,
+	//		LedgerFreeTextRS restService) {
+	//	singletons.add(restService);
+	//}
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 
 	@Contribute(javax.ws.rs.core.Application.class)
 	public static void contributeApplication(Configuration<Object> singletons,

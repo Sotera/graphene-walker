@@ -117,16 +117,24 @@ public class EntityRefDAOImpl extends
 								.parseIntWithCheck(tuple
 										.getSpecificPropertyType())));
 
+<<<<<<< HEAD
 					} else if (!tuple.getNodeType().equals(
 							G_CanonicalPropertyType.ANY)) {
+=======
+					} else if (!tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ANY.name())) {
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 						/*
 						 * A family of ids (a Canonical Property Type) was
 						 * specified (not ANY), which is one of the the
 						 * canonical enum values. Note we have to look up the
 						 * list of specific idTypes that are in this family.
 						 */
+<<<<<<< HEAD
 						if (tuple.getNodeType().equals(
 								G_CanonicalPropertyType.ACCOUNT)) {
+=======
+						if (tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ACCOUNT.name())) {
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 							/*
 							 * Search just the accountNumber column
 							 */
@@ -146,8 +154,12 @@ public class EntityRefDAOImpl extends
 							 * Since we're not searching against the identifiers
 							 * table, we don't filter on id types.
 							 */
+<<<<<<< HEAD
 						} else if (tuple.getNodeType().equals(
 								G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+=======
+						} else if (tuple.getNodeType().getName().equals(G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 							/*
 							 * Search just the customerNumber column
 							 */
@@ -181,16 +193,24 @@ public class EntityRefDAOImpl extends
 							 * at the id types associated with the canonical
 							 * type.
 							 */
+<<<<<<< HEAD
 							Integer[] idtypes = idTypeDAO
 									.getTypesForFamily(tuple.getNodeType());
+=======
+							Integer[] idtypes = idTypeDAO.getTypesForFamily(tuple.getNodeType());
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 							if (idtypes != null && idtypes.length > 0) {
 								loopBuilder.and(t.idtypeId.in(idtypes));
 							}
 
 						}
 
+<<<<<<< HEAD
 					} else if (tuple.getNodeType().equals(
 							G_CanonicalPropertyType.ANY)) {
+=======
+					} else if (tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ANY.name())) {
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 
 						if (tuple.getSearchType().equals(
 								G_SearchType.COMPARE_EQUALS)) {
@@ -275,18 +295,40 @@ public class EntityRefDAOImpl extends
 			List<G_SearchTuple<String>> values = q.getAttributeList();
 			Set<MemRow> results = new HashSet<MemRow>();
 			for (G_SearchTuple<String> est : values) {
+<<<<<<< HEAD
 				G_IdType family = est.getNodeType();
+=======
+				String family = est.getNodeType().getName();
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 				String value = est.getValue();
-				if (family.equals(G_CanonicalPropertyType.ACCOUNT)) {
+				if (family.equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 					logger.debug("finding account types that match " + values);
-					results.addAll(memDb.getRowsForAccount(value));
-				} else if (family
-						.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER)) {
-					logger.debug("finding customer number types that match "
-							+ values);
-					results.addAll(memDb.getRowsForCustomer(est.getValue()));
-				} else if (family.equals(G_CanonicalPropertyType.ANY)) {
+					try {
+						results.addAll(memDb.getRowsForAccount(value));
+					} catch (Exception e) {
+						logger.error("Error getting accounts that match " + values + ".");
+						e.printStackTrace();
+					}
+				} else if (family.equals(G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
+					logger.debug("finding customer number types that match " + values);
+					try {
+						results.addAll(memDb.getRowsForCustomer(est.getValue()));
+					} catch (Exception e) {
+						logger.error("Error getting customer numbers that match " + values + ".");
+						e.printStackTrace();
+					}
+				} else if (family.equals(G_CanonicalPropertyType.NAME.name())) {
+					logger.debug("finding names that match " + values);
+					// try {
+					//	 	FIXME: get rows from meDb using NAME
+					// 		results.addAll(memDb.getRowsForIdentifier(value, family.getValueString()))
+					// } catch (Exception e) {
+					//		logger.error("Error getting accounts that match " + values + ".");
+					// 		e.printStackTrace();
+					// }
+				} else if (family.equals(G_CanonicalPropertyType.ANY.name())) {
 					logger.debug("finding any types that match " + values);
+<<<<<<< HEAD
 					results.addAll(memDb.getRowsForIdentifier(value,
 							family.getName()));
 					results.addAll(memDb.getRowsForAccount(value));
@@ -297,6 +339,25 @@ public class EntityRefDAOImpl extends
 					// just identifiers --djue
 					results.addAll(memDb.getRowsForIdentifier(est.getValue(),
 							est.getNodeType().getName()));
+=======
+					try {
+						results.addAll(memDb.getRowsForIdentifier(value, family));
+						results.addAll(memDb.getRowsForAccount(value));
+						results.addAll(memDb.getRowsForCustomer(value));
+					} catch (Exception e) {
+						logger.error("Error getting anything that matches " + values + ".");
+						e.printStackTrace();
+					}
+				} else {
+					logger.debug("finding identifier types that match " + values);
+					try {
+						// just identifiers --djue
+						results.addAll(memDb.getRowsForIdentifier(est.getValue(), family));
+					} catch (Exception e) {
+						logger.error("Error getting identifiers that match " + values + ".");
+						e.printStackTrace();
+					}
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 				}
 
 			}
@@ -466,7 +527,7 @@ public class EntityRefDAOImpl extends
 		Set<BasicEntityRef> list = new HashSet<BasicEntityRef>(3);
 		try {
 			for (WalkerEntityref100 x : getRowsForCustomer(id)) {
-				list.add(funnel.from(x));
+				list.add(funnel.to(x));
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -634,6 +695,7 @@ public class EntityRefDAOImpl extends
 			List<G_SearchTuple<String>> values = q.getAttributeList();
 			Set<MemRow> results = new HashSet<MemRow>();
 			for (G_SearchTuple<String> s : values) {
+<<<<<<< HEAD
 				if (s.getNodeType().equals(G_CanonicalPropertyType.ACCOUNT)) {
 					results.addAll(memDb.getRowsForAccount(s.getValue()));
 				} else if (s.getNodeType().equals(
@@ -643,6 +705,15 @@ public class EntityRefDAOImpl extends
 					// all other families
 					results.addAll(memDb.getRowsForIdentifier(s.getValue(), s
 							.getNodeType().getName()));
+=======
+				if (s.getNodeType().getName().equals(G_CanonicalPropertyType.ACCOUNT.name())) {
+					results.addAll(memDb.getRowsForAccount(s.getValue()));
+				} else if (s.getNodeType().getName().equals(G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
+					results.addAll(memDb.getRowsForCustomer(s.getValue()));
+				} else {
+					// all other families
+					results.addAll(memDb.getRowsForIdentifier(s.getValue(), s.getNodeType().getName()));
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 				}
 
 			}
@@ -692,8 +763,12 @@ public class EntityRefDAOImpl extends
 			// Not yet filtered by family
 			Set<String> results = new HashSet<String>();
 			// XXX: Super kludge
+<<<<<<< HEAD
 			G_IdType family = q.getAttributeList().get(0)
 					.getNodeType();
+=======
+			G_IdType family = q.getAttributeList().get(0).getNodeType();
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 			// String family = q.getIdFamily();
 
 			for (String v : values) {

@@ -10,7 +10,10 @@ import graphene.walker.model.sql.walker.QWalkerTransactionPair100;
 import graphene.walker.model.view.transferserver.TransferRowFunnel;
 import graphene.model.idl.G_Link;
 import graphene.model.idl.G_LinkTag;
+<<<<<<< HEAD
 import graphene.model.idl.G_Property;
+=======
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 import graphene.model.idlhelper.LinkHelper;
 import graphene.model.query.EventQuery;
 import graphene.model.view.events.DirectedEventRow;
@@ -328,12 +331,23 @@ public class TransactionDAOSQLImpl extends
 		if (sq != null) {
 			list = sq.list(t.receiverId, t.senderId);
 		}
+		
 		for (Tuple tuple : list) {
 			List<G_Property> props = null;
 			// TODO: fill in more fields
+<<<<<<< HEAD
 			G_Link link = new LinkHelper(G_LinkTag.COMMUNICATION, tuple.get(
 					t.senderId).toString(), tuple.get(t.receiverId).toString(),
 					props);
+=======
+			//G_Link link = new G_Link(tuple.get(0, String.class), tuple.get(1, String.class), true, null, null, null, null);
+			G_Link link = new LinkHelper(
+				G_LinkTag.COMMUNICATION, 			// G_LinkTag tag
+				tuple.get(t.senderId).toString(),	// String source
+				tuple.get(t.receiverId).toString(), // String target
+				null								// List<G_Property> props
+			);
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 			results.add(link);
 		}
 		logger.debug("Returning " + results.size() + " entries");

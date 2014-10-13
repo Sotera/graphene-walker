@@ -1,6 +1,7 @@
 package graphene.walker.model.graphserver;
 
 import graphene.dao.EntityRefDAO;
+import graphene.dao.GenericDAO;
 import graphene.dao.IdTypeDAO;
 import graphene.dao.TransactionDAO;
 import graphene.model.idl.G_CanonicalPropertyType;
@@ -9,6 +10,7 @@ import graphene.model.idl.G_EdgeType;
 import graphene.model.idl.G_IdType;
 import graphene.model.query.StringQuery;
 import graphene.services.EventGraphBuilder;
+import graphene.services.HyperGraphBuilder;
 import graphene.util.validator.ValidationUtils;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
@@ -16,9 +18,13 @@ import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import java.util.Iterator;
 
 import mil.darpa.vande.generic.V_GenericEdge;
+import mil.darpa.vande.generic.V_GenericGraph;
 import mil.darpa.vande.generic.V_GenericNode;
 import mil.darpa.vande.generic.V_GraphQuery;
+<<<<<<< HEAD
 
+=======
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 import org.apache.avro.AvroRemoteException;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
@@ -31,7 +37,7 @@ import org.slf4j.Logger;
  * 
  */
 public class EventGraphBuilderWalkerImpl extends
-		EventGraphBuilder<WalkerTransactionPair100> {
+		EventGraphBuilder<WalkerTransactionPair100> implements HyperGraphBuilder {
 
 	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
 
@@ -64,6 +70,7 @@ public class EventGraphBuilderWalkerImpl extends
 		String t_acname = p.getReceiverValueStr();
 
 		V_GenericNode src = null, target = null;
+<<<<<<< HEAD
 		G_IdType commonNodeType;
 		try {
 			commonNodeType = nodeTypeAccess
@@ -79,15 +86,62 @@ public class EventGraphBuilderWalkerImpl extends
 					src = new V_GenericNode(s_acno);
 					src.setIdType("account");
 					src.setNodeType(commonNodeType.getName());
+=======
+		if (ValidationUtils.isValid(s_acno)) {
+			src = nodeList.getNode(s_acno);
+			if (src == null) {
+				// #F08080 is coral
+				// #90EE90 is pale green
+				// #22FF22 is vibrant green
+				G_IdType account;
+				try {
+					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					
+					src = new V_GenericNode(s_acno);
+					src.setIdType("account");
+					src.setNodeType(account.getName());
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 					src.setIdVal(s_acno);
 					src.setValue(s_acno);
 					src.setLabel(s_acname);
 					src.setColor("#22FF22"); // "#F08080" is coral
+<<<<<<< HEAD
 
 					unscannedNodeList.add(src);
 					nodeList.addNode(src);
 				}
 
+=======
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
+				
+				unscannedNodeList.add(src);
+				nodeList.addNode(src);
+			}
+
+		}
+		if (ValidationUtils.isValid(t_acno)) {
+			target = nodeList.getNode(t_acno);
+			if (target == null) {
+				G_IdType account;
+				try {
+					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					
+					target = new V_GenericNode(t_acno);
+					target.setIdType("account");
+					target.setNodeType(account.getName());
+					target.setIdVal(t_acno);
+					target.setValue(t_acno);
+					target.setLabel(t_acname);
+					target.setColor("#22FF22");
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
+				
+				unscannedNodeList.add(target);
+				nodeList.addNode(target);
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 			}
 			if (ValidationUtils.isValid(t_acno)) {
 				target = nodeList.getNode(t_acno);
@@ -111,6 +165,7 @@ public class EventGraphBuilderWalkerImpl extends
 
 			}
 
+<<<<<<< HEAD
 			if (src != null && target != null) {
 				// Here, an event id is used, so we will get an edge per event.
 				String key = generateEdgeId(p.getPairId().toString());
@@ -157,6 +212,51 @@ public class EventGraphBuilderWalkerImpl extends
 				} else {
 					// Handle how multiple edges are aggregated.
 				}
+=======
+		if (src != null && target != null) {
+			//Here, an event id is used, so we will get an edge per event.
+			String key = generateEdgeId(p.getPairId().toString());
+			
+			if (key != null && !edgeMap.containsKey(key)) {
+				G_EdgeType edgeType;
+				try {
+					edgeType = edgeTypeAccess.getEdgeType(G_CanonicalRelationshipType.OWNER_OF.name());
+					
+					V_GenericEdge v = new V_GenericEdge(src, target);
+					v.setIdType(edgeType.getName());
+					String subject = p.getTrnSubjStr();
+					String payload = p.getTrnValueStr();
+					String label = subject;
+					
+					// prune all but 1 "RE:" if it is present
+					int index = subject.lastIndexOf("RE:");
+					if (index > 0) { // i.e. index is not -1 or 0
+						label = subject.substring(index);
+					}
+					
+					if (label.length() > 15) {
+						label = label.substring(0, 15) + "...";
+					}
+					
+					v.setLabel(label);
+					v.setIdVal(edgeType.getName());
+					long dt = p.getTrnDt().getTime();
+					double value = p.getTrnValueNbr();
+					v.setDoubleValue(value);
+
+					v.addData("date", Long.toString(dt));
+					v.addData("amount", Double.toString(value));
+					v.addData("id", p.getPairId().toString());
+					v.addData("payload", payload);
+					v.addData("subject", subject);
+					edgeMap.put(key, v);
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
+			}else{
+				//Handle how multiple edges are aggregated.
+			}
+>>>>>>> b67a50495f097ccc3c723ba8b5ffff99637cefe9
 
 			}
 		} catch (AvroRemoteException e1) {
@@ -183,5 +283,42 @@ public class EventGraphBuilderWalkerImpl extends
 				logger.error("Could not find node with id = " + id);
 			}
 		}
+	}
+
+	// XXX FIXME we have a generics issue with V_GraphQuery vs the Temporal one
+	// we want to use.
+	@Override
+	public V_GenericGraph makeGraphResponse(V_GraphQuery graphQuery)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GenericDAO getDAO() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void buildQueryForNextIteration(V_GenericNode... nodes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(String id, String idType,
+			String nodeType, V_GenericNode attachTo, String relationType,
+			String relationValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(String id, String idType,
+			String nodeType, V_GenericNode attachTo, String relationType,
+			String relationValue, String forceColor) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
