@@ -241,4 +241,10 @@ public class PropertyGraphBuilderWalkerImpl extends
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public boolean determineTraversability(V_GenericNode n) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
