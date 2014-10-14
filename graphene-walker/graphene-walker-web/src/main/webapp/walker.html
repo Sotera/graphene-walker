@@ -234,6 +234,7 @@
 	<script type="text/javascript" src="core/js/cmp/shared/GraphToolbar.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/legendDefs.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/leafletMapSubs.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/RadialContextMenu.js"></script>
 	
 	<!-- Shared tools overrides -->
 	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
@@ -407,7 +408,22 @@
 			// if you only have one legend type in the app, setting the default makes it easier to access without having to
 			// remember the key "graph_legend" anywhere else.
 			GLegend.setDefaultGroupName("graph_legend");
-
+			
+			// create and modify global RadialContextMenu object
+			GRadialMenu = new RadialContextMenu({/* config parameters */});
+			
+			// extend its existing default commands with another one
+			/********************************* EXAMPLE ********************************* 
+			RadialMenu.addCommand(
+				"Graph Foo", // Title of the function
+				function(selectedElement[, extraParam1, ...extraParamN]) {
+					// this refers to the function's scope defined with RadialMenu.setScope( ... );
+					this.doFoo(selectedElement, extraParam1, extraParam2);
+				}, 
+				"extraParam1", "bar" // you can pass 0 to N optional parameters
+			);
+			********************************* EXAMPLE **********************************/
+			
             makeESTab(); // Entity Search
             getTabFrame().setActiveTab(getESFrame());
 
