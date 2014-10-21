@@ -87,8 +87,8 @@ public class WalkerDAOModule {
 
 
 		binder.bind(IMemoryDB.class, WalkerMemoryDB.class);
-		binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
-				EntityLightFunnelMarker.class);
+		//binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
+		//		EntityLightFunnelMarker.class);
 		// Wiring for user services
 		binder.bind(EntityGraphDAO.class, EntityGraphDAONeo4JEImpl.class);
 		binder.bind(GroupDAO.class, GroupDAONeo4JEImpl.class);
