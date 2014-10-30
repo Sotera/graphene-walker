@@ -3,7 +3,7 @@
 <html>
 
 <head>
-	<title> Graphene Web Demo: Walker Emails, Version 4.0.8 </title>
+	<title> Graphene Web Demo: Walker Emails, Version 4.1.0 </title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
@@ -12,73 +12,137 @@
 	<!-- <link type="text/css" href="core/resources/css/cssjit/ForceDirected.css" rel="stylesheet" /> -->
 	<link type="text/css" href="core/js/libs/extjs/resources/css/ext-all.css"  rel="stylesheet"  />
 	<link type="text/css" href="core/js/libs/extjs/ux/css/CheckHeader.css"  rel="stylesheet"  />
+	<link type="text/css" href="core/js/libs/leaflet-0.7.3/leaflet.css" rel="stylesheet" />
 
     <style type="text/css">
-			x-grid-cell-first {
-			  overflow: hidden;
-			  -o-text-overflow: ellipsis;
-			  text-overflow: ellipsis;
-			  padding: 2px 6px 3px;
-			  white-space: nowrap; }
+		x-grid-cell-first {
+			overflow: hidden;
+			-o-text-overflow: ellipsis;
+			text-overflow: ellipsis;
+			padding: 2px 6px 3px;
+			white-space: nowrap; 
+		}
+		
 		#EntityGraph {
 			background-color: lightyellow;
 			color: 'black';
 		}
+		
 		#TransfersGraph {
 			background-color: lightyellow;
 			color: 'black';
 		}
+		
 		x-busy-tab {
-		    background-color: lightyellow;
+			background-color: lightyellow;
 		}
+		
 		x-hasdata-tab {
-		    background-color: red;
-		    color: white;
+			background-color: red;
+			color: white;
 		}
+		
 		x-nodata-tab {
-		    background-color: lightblue;
+			background-color: lightblue;
 		}
-
-	 	  .groupcolor0 .account{
-	 	  	 color:black;
-	 	  }
-	 	  .groupcolor1  .account{
-	 	     color: red;
-	 	  }
-	 	  .groupcolor2  .account{
-	 	     color: blue;
-	 	  }
-	 	  .groupcolor3  .account{
-	 	     color: green;
-	 	  }
-	 	  .groupcolor4  .account{
-	 	     color: orange;
-	 	  }
-
-		  .bars rect {
-		     fill: steelblue;
-		  }
-
-		  .axis text {
-		     font: 10px sans-serif;
-		  }
-
-		  .axis path, .axis line {
-		    fill: none;
-		    stroke: #000;
-		    shape-rendering: crispEdges;
-		  }
-		  
-		  .grid .tick {
+		
+		.groupcolor0 .account{
+			color:black;
+		}
+		
+		.groupcolor1  .account{
+			color: red;
+		}
+		
+		.groupcolor2  .account{
+			color: blue;
+		}
+		
+		.groupcolor3  .account{
+			color: green;
+		}
+		
+		.groupcolor4  .account{
+			color: orange;
+		}
+		
+		.bars rect {
+			fill: steelblue;
+		}
+		
+		.axis text {
+			font: 10px sans-serif;
+		}
+		
+		.axis path, .axis line {
+			fill: none;
+			stroke: #000;
+			shape-rendering: crispEdges;
+		}
+		 
+		.grid .tick {
 			stroke: lightgrey;
 			stroke-opacity: 0.75;
-		  }
+		}
+
+		.grid_default_btn {
+			background-position: center center;
+			background-image: url(/graphene-walker-web/core/images/grid_icon.png) !important;
+		}
+
+		.hierarch_circle_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/hierarchy_circle_icon.png) !important;
+		}
+
+		.hierarch_default_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/hierarchy_icon.png) !important;
+		}
+
+		.cose_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/cose_animated_icon.png) !important;
+		}
+
+		.cose_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/cose_icon.png) !important;
+		}
+
+		.arbor_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_animated_icon.png) !important;
+		}
+
+		.arbor_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_icon.png) !important;
+		}
+
+		.arbor_wheel_anim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_wheel_animated_icon.png) !important;
+		}
+
+		.arbor_wheel_unanim_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/arbor_wheel_icon.png) !important;
+		}
+		
+		.toolbar_help_btn {
+			background-position: center center;
+			background-image : url(/graphene-walker-web/core/images/HelpIcon_solid.gif) !important
+		}
     </style>
 
 	<!-- THIRD PARTY -->
     <script type="text/javascript" src="core/js/libs/extjs/ext-all-debug.js"></script>
     <script type="text/javascript" src="core/js/libs/extjs/ux/CheckColumn.js"></script>
     <script type="text/javascript" src="core/js/libs/d3/d3.v2.js"></script>
+    
+    <!-- Debug version of leaflet.js -->
+    <script type="text/javascript" src="core/js/libs/leaflet-0.7.3/leaflet-src.js"></script>
 
 	 <!-- Cytoscape.js library for the Graph -->
 	<script src="core/js/libs/jquery/jquery-2.0.3.js"></script>
@@ -97,7 +161,7 @@
 
 		var Config = {
 		    title:'Graphene',
-		    version:'4.0.8',
+		    version:'4.1.0',
 			headerUrl: prepath+'accountdetails',
 			detailUrl: prepath+'getTransactions',
 
@@ -126,6 +190,8 @@
             getUDSessionsByNameUrl: prepath + 'UDsession/getSessionsByName/',    // takes a name
             saveUDSessionUrl: prepath + 'UDsession/save',    // POST - takes JSON
 
+            mapTileUrl: 'http://{s}.tiles.mapbox.com/v3/drdevious.jhjoe8h8/{z}/{x}/{y}.png',
+            
 			dataSourceUrl:	   prepath+'datasources/getAll',
 			restEasy:true,
 			canUseD3: canUseD3,
@@ -134,6 +200,7 @@
 
 		Config.appRoot = "/graphene-walker-web";
 		Config.imagesUrl = Config.appRoot + "/images/";
+		Config.coreImagesUrl = Config.appRoot + "/core/images/";
 		Config.helpIcon = Config.imagesUrl + "HelpIcon_solid.gif";
         // Icons for filter animation controls
         Config.PlayReverse = Config.imagesUrl + "PlayReverse_Hover14.png";
@@ -164,11 +231,14 @@
 	<script type="text/javascript" src="core/js/cmp/shared/graphLayoutMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/graphManagerMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/GraphToolbar.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/legendDefs.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/leafletMapSubs.js"></script>
+	<script type="text/javascript" src="core/js/cmp/shared/RadialContextMenu.js"></script>
 	
 	<!-- Shared tools overrides -->
 	<script type="text/javascript" src="js/shared/interactiond3.js"></script>
 	<script type="text/javascript" src="js/shared/scatterplotd3.js"></script>
-	<script type="text/javascript" src="js/shared/WalkerLegendDefs.js"></script>
 
 	<script type="text/javascript">
 //We don't need to know the absolute path or the deployment context.  The prefix is always just rest/
@@ -301,9 +371,7 @@
 		   	Ext.tip.QuickTipManager.init();
 			
 		   	// disable the browser from acting on right-click
-		   	Ext.getBody().on("contextmenu", function(e) {
-				// do nothing
-			});
+		    Ext.getBody().on("contextmenu", function() {/* do nothing by default */}, null, {preventDefault: true});
 
    			Ext.create("Ext.container.Viewport", {
                     layout:'border',
@@ -327,8 +395,35 @@
    			}); // viewport
 
             // MFM create legend for all tabs that need them
-            GLegend.createLegend("default", null);
-
+            // GLegend is global and accessible anywhere in the app
+			GLegend = new Legend();
+			GLegend.addLegendItems([
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_red.png", text: "Item you searched for."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_palegreen.png", text: "Email Address."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_gray.png", text: "Shared Attributes."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_darkblue.png", text: "Selected Item(s)."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_magenta.png", text: "Expanded Nodes."},
+				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_blackline.png", text: "Selected Link."}
+			]);
+			// if you only have one legend type in the app, setting the default makes it easier to access without having to
+			// remember the key "graph_legend" anywhere else.
+			GLegend.setDefaultGroupName("graph_legend");
+			
+			// create and modify global RadialContextMenu object
+			GRadialMenu = new RadialContextMenu({/* config parameters */});
+			
+			// extend its existing default commands with another one
+			/********************************* EXAMPLE ********************************* 
+			RadialMenu.addCommand(
+				"Graph Foo", // Title of the function
+				function(selectedElement[, extraParam1, ...extraParamN]) {
+					// this refers to the function's scope defined with RadialMenu.setScope( ... );
+					this.doFoo(selectedElement, extraParam1, extraParam2);
+				}, 
+				"extraParam1", "bar" // you can pass 0 to N optional parameters
+			);
+			********************************* EXAMPLE **********************************/
+			
             makeESTab(); // Entity Search
             getTabFrame().setActiveTab(getESFrame());
 
@@ -559,6 +654,10 @@
 	<!-- EntityTab common -->
 	<script type="text/javascript" src="core/js/cmp/entitytab/js/EntityDetails.js"></script>
 	<script type="text/javascript" src="core/js/cmp/entitytab/js/entityTab.js"></script>
+	
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapPanel.js"></script>
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapToolbar.js"></script>
+	<script type="text/javascript" src="core/js/cmp/Map/js/MapDetailsPanel.js"></script>
 
 </head>
 
@@ -568,3 +667,4 @@
 <div id="log"></div>
 -->
 </body>
+</html>

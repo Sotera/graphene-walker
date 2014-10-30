@@ -3,17 +3,24 @@ package graphene.walker.model.graphserver;
 import java.util.Iterator;
 
 import graphene.dao.EntityRefDAO;
+import graphene.dao.GenericDAO;
 import graphene.dao.IdTypeDAO;
 import graphene.dao.TransactionDAO;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import graphene.model.idl.G_CanonicalPropertyType;
-import graphene.model.idl.G_RelationshipType;
+import graphene.model.idl.G_CanonicalRelationshipType;
+import graphene.model.idl.G_EdgeType;
+import graphene.model.idl.G_IdType;
 import graphene.model.query.StringQuery;
 import graphene.services.EventGraphBuilder;
+import graphene.services.HyperGraphBuilder;
 import graphene.util.validator.ValidationUtils;
 import mil.darpa.vande.generic.V_GenericEdge;
+import mil.darpa.vande.generic.V_GenericGraph;
 import mil.darpa.vande.generic.V_GenericNode;
+import mil.darpa.vande.generic.V_GraphQuery;
+import org.apache.avro.AvroRemoteException;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
 
@@ -25,7 +32,7 @@ import org.slf4j.Logger;
  * 
  */
 public class EventGraphBuilderWalkerImpl extends
-		EventGraphBuilder<WalkerTransactionPair100> {
+		EventGraphBuilder<WalkerTransactionPair100> implements HyperGraphBuilder {
 
 	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
 
@@ -64,14 +71,20 @@ public class EventGraphBuilderWalkerImpl extends
 				// #F08080 is coral
 				// #90EE90 is pale green
 				// #22FF22 is vibrant green
-				
-				src = new V_GenericNode(s_acno);
-				src.setIdType("account");
-				src.setFamily(G_CanonicalPropertyType.ACCOUNT.getValueString());
-				src.setIdVal(s_acno);
-				src.setValue(s_acno);
-				src.setLabel(s_acname);
-				src.setColor("#22FF22"); // "#F08080" is coral
+				G_IdType account;
+				try {
+					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					
+					src = new V_GenericNode(s_acno);
+					src.setIdType("account");
+					src.setNodeType(account.getName());
+					src.setIdVal(s_acno);
+					src.setValue(s_acno);
+					src.setLabel(s_acname);
+					src.setColor("#22FF22"); // "#F08080" is coral
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
 				
 				unscannedNodeList.add(src);
 				nodeList.addNode(src);
@@ -81,17 +94,20 @@ public class EventGraphBuilderWalkerImpl extends
 		if (ValidationUtils.isValid(t_acno)) {
 			target = nodeList.getNode(t_acno);
 			if (target == null) {
-				target = new V_GenericNode(t_acno);
-				target.setIdType("account");
-				target.setFamily(G_CanonicalPropertyType.ACCOUNT.getValueString());
-				target.setIdVal(t_acno);
-				target.setValue(t_acno);
-				target.setLabel(t_acname);
-				target.setColor("#22FF22");
-				// value type is "customer"
-				//target.addProperty("Account Number", t_acno);
-				//target.addProperty("Account Owner", t_acname);
-				//target.addProperty("color", "red");
+				G_IdType account;
+				try {
+					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					
+					target = new V_GenericNode(t_acno);
+					target.setIdType("account");
+					target.setNodeType(account.getName());
+					target.setIdVal(t_acno);
+					target.setValue(t_acno);
+					target.setLabel(t_acname);
+					target.setColor("#22FF22");
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
 				
 				unscannedNodeList.add(target);
 				nodeList.addNode(target);
@@ -104,35 +120,41 @@ public class EventGraphBuilderWalkerImpl extends
 			String key = generateEdgeId(p.getPairId().toString());
 			
 			if (key != null && !edgeMap.containsKey(key)) {
-				V_GenericEdge v = new V_GenericEdge(src, target);
-				v.setIdType(G_RelationshipType.OWNER_OF.name());
-				//v.setLabel(G_RelationshipType.OWNER_OF.name());
-				String subject = p.getTrnSubjStr();
-				String payload = p.getTrnValueStr();
-				String label = subject;
-				
-				// prune all but 1 "RE:" if it is present
-				int index = subject.lastIndexOf("RE:");
-				if (index > 0) { // i.e. index is not -1 or 0
-					label = subject.substring(index);
-				}
-				
-				if (label.length() > 15) {
-					label = label.substring(0, 15) + "...";
-				}
-				
-				v.setLabel(label);
-				v.setIdVal(G_RelationshipType.OWNER_OF.name());
-				long dt = p.getTrnDt().getTime();
-				double value = p.getTrnValueNbr();
-				v.setDoubleValue(value);
+				G_EdgeType edgeType;
+				try {
+					edgeType = edgeTypeAccess.getEdgeType(G_CanonicalRelationshipType.OWNER_OF.name());
+					
+					V_GenericEdge v = new V_GenericEdge(src, target);
+					v.setIdType(edgeType.getName());
+					String subject = p.getTrnSubjStr();
+					String payload = p.getTrnValueStr();
+					String label = subject;
+					
+					// prune all but 1 "RE:" if it is present
+					int index = subject.lastIndexOf("RE:");
+					if (index > 0) { // i.e. index is not -1 or 0
+						label = subject.substring(index);
+					}
+					
+					if (label.length() > 15) {
+						label = label.substring(0, 15) + "...";
+					}
+					
+					v.setLabel(label);
+					v.setIdVal(edgeType.getName());
+					long dt = p.getTrnDt().getTime();
+					double value = p.getTrnValueNbr();
+					v.setDoubleValue(value);
 
-				v.addData("date", Long.toString(dt));
-				v.addData("amount", Double.toString(value));
-				v.addData("id", p.getPairId().toString());
-				v.addData("payload", payload);
-				v.addData("subject", subject);
-				edgeMap.put(key, v);
+					v.addData("date", Long.toString(dt));
+					v.addData("amount", Double.toString(value));
+					v.addData("id", p.getPairId().toString());
+					v.addData("payload", payload);
+					v.addData("subject", subject);
+					edgeMap.put(key, v);
+				} catch (AvroRemoteException e) {
+					e.printStackTrace();
+				}
 			}else{
 				//Handle how multiple edges are aggregated.
 			}
@@ -159,5 +181,48 @@ public class EventGraphBuilderWalkerImpl extends
 				logger.error("Could not find node with id = " + id);
 			}
 		}
+	}
+
+	// XXX FIXME we have a generics issue with V_GraphQuery vs the Temporal one
+	// we want to use.
+	@Override
+	public V_GenericGraph makeGraphResponse(V_GraphQuery graphQuery)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public GenericDAO getDAO() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void buildQueryForNextIteration(V_GenericNode... nodes) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(String id, String idType,
+			String nodeType, V_GenericNode attachTo, String relationType,
+			String relationValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(String id, String idType,
+			String nodeType, V_GenericNode attachTo, String relationType,
+			String relationValue, String forceColor) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean determineTraversability(V_GenericNode n) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

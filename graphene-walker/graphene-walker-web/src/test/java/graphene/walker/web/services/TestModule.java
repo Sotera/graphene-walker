@@ -7,6 +7,7 @@ import graphene.dao.IdTypeDAO;
 import graphene.dao.PermissionDAO;
 import graphene.dao.RoleDAO;
 import graphene.dao.TransactionDAO;
+import graphene.dao.annotations.EntityLightFunnelMarker;
 import graphene.dao.sql.DAOSQLModule;
 import graphene.walker.dao.impl.DataSourceListDAOImpl;
 import graphene.walker.dao.impl.EntityRefDAOImpl;
@@ -14,8 +15,10 @@ import graphene.walker.dao.impl.IdTypeDAOSQLImpl;
 import graphene.walker.dao.impl.TransactionDAOSQLImpl;
 import graphene.walker.model.graphserver.GraphServerModule;
 import graphene.walker.model.memorydb.WalkerMemoryDB;
+import graphene.model.Funnel;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
+import graphene.model.view.entities.DefaultEntityLightFunnel;
 import graphene.services.EntityDAOImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
@@ -34,7 +37,7 @@ import org.apache.tapestry5.ioc.annotations.SubModule;
 import org.apache.tapestry5.ioc.services.SymbolProvider;
 import org.slf4j.Logger;
 
-@SubModule({ GraphServerModule.class,DAOSQLModule.class, UtilModule.class })
+@SubModule({ GraphServerModule.class, DAOSQLModule.class, UtilModule.class })
 public class TestModule {
 
 	public static void bind(ServiceBinder binder) {
@@ -51,7 +54,8 @@ public class TestModule {
 
 		binder.bind(TransactionDAO.class, TransactionDAOSQLImpl.class).withId(
 				"Primary");
-
+		binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
+				EntityLightFunnelMarker.class);
 		// TODO: Make this into a service in the core we can contribute to (for
 		// distributed configuration!)
 		binder.bind(DataSourceListDAO.class, DataSourceListDAOImpl.class);
@@ -83,7 +87,6 @@ public class TestModule {
 			Configuration<String> configuration) {
 		configuration.add("org.hsqldb.jdbc.JDBCDriver");
 	}
-
 
 	public PropertiesFileSymbolProvider buildColorsSymbolProvider(Logger logger) {
 		return new PropertiesFileSymbolProvider(logger,

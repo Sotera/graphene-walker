@@ -11,6 +11,7 @@ import graphene.dao.RoleDAO;
 import graphene.dao.TransactionDAO;
 import graphene.dao.UserDAO;
 import graphene.dao.WorkspaceDAO;
+import graphene.dao.annotations.EntityLightFunnelMarker;
 import graphene.dao.neo4j.DAONeo4JEModule;
 import graphene.dao.neo4j.EntityGraphDAONeo4JEImpl;
 import graphene.dao.neo4j.GroupDAONeo4JEImpl;
@@ -21,9 +22,12 @@ import graphene.walker.dao.impl.DataSourceListDAOImpl;
 import graphene.walker.dao.impl.EntityRefDAOImpl;
 import graphene.walker.dao.impl.IdTypeDAOSQLImpl;
 import graphene.walker.dao.impl.TransactionDAOSQLImpl;
+import graphene.walker.model.WalkerEntityLightFunnel;
 import graphene.walker.model.memorydb.WalkerMemoryDB;
+import graphene.model.Funnel;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
+import graphene.model.view.entities.DefaultEntityLightFunnel;
 import graphene.services.EntityDAOImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
@@ -78,10 +82,13 @@ public class WalkerDAOModule {
 		// TODO: Make this into a service in the core we can contribute to (for
 		// distributed configuration!)
 		binder.bind(DataSourceListDAO.class, DataSourceListDAOImpl.class);
+		binder.bind(Funnel.class, WalkerEntityLightFunnel.class).withMarker(
+				EntityLightFunnelMarker.class);
 
 
 		binder.bind(IMemoryDB.class, WalkerMemoryDB.class);
-		
+		//binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
+		//		EntityLightFunnelMarker.class);
 		// Wiring for user services
 		binder.bind(EntityGraphDAO.class, EntityGraphDAONeo4JEImpl.class);
 		binder.bind(GroupDAO.class, GroupDAONeo4JEImpl.class);

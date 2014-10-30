@@ -4,14 +4,14 @@ import graphene.dao.TransferDAO;
 import graphene.model.query.EventQuery;
 import graphene.model.view.events.SingleSidedEventRow;
 import graphene.model.view.events.SingleSidedEvents;
-import graphene.rest.ws.LedgerFreeTextRS;
+//import graphene.rest.ws.LedgerFreeTextRS;
 import graphene.util.FastNumberUtils;
 
 import java.util.List;
 
 import org.apache.tapestry5.ioc.annotations.InjectService;
 
-public class LedgerFreeTextRSImpl implements LedgerFreeTextRS {
+public class LedgerFreeTextRSImpl /*implements LedgerFreeTextRS*/ {
 
 	// TODO: Revisit the caching needs. This is not how the pros do it. --djue
 	// private LedgerQuery prevQuery;
@@ -19,7 +19,7 @@ public class LedgerFreeTextRSImpl implements LedgerFreeTextRS {
 	@InjectService("Solr")
 	private TransferDAO<SingleSidedEventRow, EventQuery> solr;
 
-	@Override
+	//@Override
 	public SingleSidedEvents getTransactions(String account, int start,
 			int limit, String minAmount, String maxAmount, String minSecs,
 			String maxSecs, String comments, String sortColumn) {

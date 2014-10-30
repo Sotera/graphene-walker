@@ -2,12 +2,12 @@ package graphene.walker.web.rest;
 
 import graphene.dao.UnifiedCommunicationEventDAO;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
-import graphene.model.idhelper.PropertyHelper;
+import graphene.model.idlhelper.PropertyHelper;
 import graphene.model.idl.G_Link;
 import graphene.model.idl.G_Property;
 import graphene.model.idl.G_PropertyTag;
 import graphene.model.idl.G_PropertyType;
-import graphene.model.idl.G_RelationshipType;
+import graphene.model.idl.G_CanonicalRelationshipType;
 import graphene.model.idl.G_SearchTuple;
 import graphene.model.idl.G_SearchType;
 import graphene.model.query.DirectedEventQuery;
@@ -53,22 +53,16 @@ public class EventSearchRSImpl implements EventSearchRS {
 		// the id of the target
 		l.setTarget(k.getReceiverId().toString());
 		// Party A
-		properties.add(new PropertyHelper("aName", "Sender Name", k
-				.getSenderId(), G_PropertyType.STRING, G_PropertyTag.NAME));
-		properties.add(new PropertyHelper("aId", "Sender Id", k.getSenderId(),
-				G_PropertyType.STRING, G_PropertyTag.ID));
+		properties.add(new PropertyHelper("aName", "Sender Name", k.getSenderId(), G_PropertyType.STRING, G_PropertyTag.NAME));
+		properties.add(new PropertyHelper("aId", "Sender Id", k.getSenderId(), G_PropertyType.STRING, G_PropertyTag.ID));
 
 		// Party B
-		properties.add(new PropertyHelper("aName", "Receiver Name", k
-				.getReceiverValueStr(), G_PropertyType.STRING,
-				G_PropertyTag.NAME));
-		properties.add(new PropertyHelper("aId", "Receiver Id", k
-				.getReceiverId(), G_PropertyType.STRING, G_PropertyTag.ID));
+		properties.add(new PropertyHelper("aName", "Receiver Name", k.getReceiverValueStr(), G_PropertyType.STRING, G_PropertyTag.NAME));
+		properties.add(new PropertyHelper("aId", "Receiver Id", k.getReceiverId(), G_PropertyType.STRING, G_PropertyTag.ID));
 
 		// Common
-		properties.add(new PropertyHelper("Comments", "Comments", k
-				.getTrnValueStr(), G_PropertyType.STRING));
-		properties.add(new PropertyHelper("Subject", "Subject", k.getTrnSubjStr(), G_PropertyType.STRING));
+		properties.add(new PropertyHelper("Comments", "Comments", k.getTrnValueStr(), G_PropertyType.STRING, G_PropertyTag.TEXT));
+		properties.add(new PropertyHelper("Subject", "Subject", k.getTrnSubjStr(), G_PropertyType.STRING, G_PropertyTag.TEXT));
 
 		// TODO: Bake in the geo coords just like any other property.
 		// try {
@@ -82,7 +76,8 @@ public class EventSearchRSImpl implements EventSearchRS {
 		// // probably null or invalid lats/lons
 		// }
 
-		l.getTags().add(G_RelationshipType.IN_EVENT);
+		// FIXME: Add appropriate tag(s)
+		// l.getTags().add(G_CanonicalRelationshipType.IN_EVENT);
 		l.setProperties(properties);
 		l.setDirected(true);
 		return l;
