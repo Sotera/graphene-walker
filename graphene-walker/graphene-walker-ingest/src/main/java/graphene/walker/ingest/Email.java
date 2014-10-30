@@ -20,7 +20,7 @@ public class Email {
 	//FIXME: This is not the length, it's the payload id (the whole email, stored in another table)
 	int length;
 	//static SimpleDateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-	static SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm:ss");
+	static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	
 	boolean parseFromLine(String line)
 	{
