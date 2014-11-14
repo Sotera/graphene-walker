@@ -295,8 +295,8 @@ Ext.define("DARPA.TransfersGrid",  {
                 rowData = recs[i].data;
                 rowTime = recs[i].raw.dateMilliSeconds / 1000; //(new Date(rowData.date)).getTime() / 1000;
                 selTime = (selDataItem.time / 1000); // - 14400;
-                if (rowData.senderId.toString() == selDataItem.source &&
-                    rowData.receiverId.toString() == selDataItem.target && 
+                if (rowData.senderValue.toString() == selDataItem.source &&
+                    rowData.receiverValue.toString() == selDataItem.target && 
                     rowTime == selTime ) {
                     
                         // DEBUG

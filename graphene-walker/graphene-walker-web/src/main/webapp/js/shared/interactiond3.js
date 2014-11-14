@@ -302,7 +302,7 @@ Ext.define('DARPA.Interactiond3', {
                     // DEBUG
                     //console.log("dDateStr = " + dDateStr + ", grec.date = " + grec.date);
 
-                    if (grec.date == dDateStr && grec.receiverId == datum.target && grec.senderId == datum.source ) {
+                    if (grec.date == dDateStr && grec.receiverValue == datum.target && grec.senderValue == datum.source ) {
                         return datum;
                     }
                 }
