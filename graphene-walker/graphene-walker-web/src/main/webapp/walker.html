@@ -399,11 +399,11 @@
             // GLegend is global and accessible anywhere in the app
 			GLegend = new Legend();
 			GLegend.addLegendItems([
-				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_red.png", text: "Item you searched for."},
-				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_palegreen.png", text: "Email Address."},
-				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_gray.png", text: "Shared Attributes."},
-				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_darkblue.png", text: "Selected Item(s)."},
-				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_magenta.png", text: "Expanded Nodes."},
+				{groupNames: ["graph_legend"], color: "red", text: "Item you searched for."},
+				{groupNames: ["graph_legend"], color: "#22FF22", text: "Email Address."},
+				{groupNames: ["graph_legend"], color: "gray", text: "Shared Attributes."},
+				{groupNames: ["graph_legend"], color: "darkblue", text: "Selected Item(s)."},
+				//{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_magenta.png", text: "Expanded Nodes."},
 				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_blackline.png", text: "Selected Link."}
 			]);
 			// if you only have one legend type in the app, setting the default makes it easier to access without having to
