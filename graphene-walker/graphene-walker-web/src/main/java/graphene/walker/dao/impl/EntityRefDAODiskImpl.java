@@ -3,7 +3,7 @@ package graphene.walker.dao.impl;
 import graphene.dao.EntityRefDAO;
 import graphene.dao.IdTypeDAO;
 import graphene.dao.sql.AbstractDiskCacheDAOJDBC;
-import graphene.walker.model.BasicEntityRefFunnel;
+import graphene.walker.model.funnels.BasicEntityRefFunnel;
 import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.QWalkerEntityref100;

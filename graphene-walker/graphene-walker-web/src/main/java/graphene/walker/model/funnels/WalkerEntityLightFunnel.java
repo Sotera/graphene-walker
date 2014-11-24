@@ -1,4 +1,4 @@
-package graphene.walker.model;
+package graphene.walker.model.funnels;
 
 import graphene.model.Funnel;
 import graphene.model.idl.G_Entity;

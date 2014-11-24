@@ -5,9 +5,9 @@ package graphene.walker.dao.impl;
 
 import graphene.dao.TransactionDAO;
 import graphene.dao.sql.GenericDAOJDBCImpl;
+import graphene.walker.model.funnels.TransferRowFunnel;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import graphene.walker.model.sql.walker.QWalkerTransactionPair100;
-import graphene.walker.model.view.transferserver.TransferRowFunnel;
 import graphene.model.idl.G_Link;
 import graphene.model.idl.G_LinkTag;
 import graphene.model.idlhelper.LinkHelper;

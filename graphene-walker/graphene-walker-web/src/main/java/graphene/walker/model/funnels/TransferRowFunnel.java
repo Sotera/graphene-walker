@@ -1,4 +1,4 @@
-package graphene.walker.model.view.transferserver;
+package graphene.walker.model.funnels;
 
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
 import graphene.model.view.events.DirectedEventRow;

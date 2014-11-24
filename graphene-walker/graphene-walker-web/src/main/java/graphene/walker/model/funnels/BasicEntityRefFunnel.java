@@ -1,4 +1,4 @@
-package graphene.walker.model;
+package graphene.walker.model.funnels;
 
 import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.model.Funnel;

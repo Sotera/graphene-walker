@@ -1,14 +1,16 @@
 package graphene.walker.web.services;
 
-import graphene.walker.dao.WalkerDAOModule;
-import graphene.walker.model.graphserver.GraphServerModule;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.rest.services.RestModule;
 import graphene.util.PropertiesFileSymbolProvider;
 import graphene.util.UtilModule;
+import graphene.walker.dao.WalkerDAOModule;
+import graphene.walker.model.graphserver.GraphServerModule;
 //import graphene.web.security.ShiroSecurityModule;
 import graphene.web.security.NoSecurityModule;
 import graphene.web.services.GrapheneModule;
+import graphene.web.services.SearchBrokerService;
+import graphene.web.services.SearchBrokerServiceDefaultImpl;
 
 import org.apache.tapestry5.ioc.MappedConfiguration;
 import org.apache.tapestry5.ioc.OrderedConfiguration;
@@ -26,7 +28,7 @@ import org.tynamo.security.SecuritySymbols;
  */
 @SubModule({ WalkerDAOModule.class, AppRestModule.class,
 		GraphServerModule.class, GrapheneModule.class, RestModule.class,
-		UtilModule.class, /*ShiroSecurityModule.class*/ NoSecurityModule.class })
+		UtilModule.class, /* ShiroSecurityModule.class */NoSecurityModule.class })
 public class AppModule {
 
 	public static void bind(ServiceBinder binder) {
@@ -36,12 +38,13 @@ public class AppModule {
 		// Use service builder methods (example below) when the implementation
 		// is provided inline, or requires more initialization than simply
 		// invoking the constructor.
-
+		binder.bind(SearchBrokerService.class, SearchBrokerServiceDefaultImpl.class);
 	}
 
 	public static void contributeApplicationDefaults(
 			MappedConfiguration<String, Object> configuration) {
-		configuration.override(G_SymbolConstants.APPLICATION_NAME, "Graphene-Walker");
+		configuration.override(G_SymbolConstants.APPLICATION_NAME,
+				"Graphene-Walker");
 		configuration.override(SecuritySymbols.SUCCESS_URL, "/index");
 	}
 
