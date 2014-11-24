@@ -20,6 +20,7 @@ import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericGraph;
 import mil.darpa.vande.generic.V_GenericNode;
 import mil.darpa.vande.generic.V_GraphQuery;
+
 import org.apache.avro.AvroRemoteException;
 import org.apache.tapestry5.ioc.annotations.Inject;
 import org.slf4j.Logger;
@@ -65,103 +66,126 @@ public class EventGraphBuilderWalkerImpl extends
 		String t_acname = p.getReceiverValueStr();
 
 		V_GenericNode src = null, target = null;
+		
 		if (ValidationUtils.isValid(s_acno)) {
 			src = nodeList.getNode(s_acno);
 			if (src == null) {
-				// #F08080 is coral
-				// #90EE90 is pale green
-				// #22FF22 is vibrant green
-				G_IdType account;
 				try {
-					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
-					
-					src = new V_GenericNode(s_acno);
-					src.setIdType("account");
+					G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					src = createNode(s_acno, s_acname, "account", "#22FF22");
 					src.setNodeType(account.getName());
-					src.setIdVal(s_acno);
-					src.setValue(s_acno);
-					src.setLabel(s_acname);
-					src.setColor("#22FF22"); // "#F08080" is coral
+					unscannedNodeList.add(src);
+					nodeList.addNode(src);
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
+					src = null;
 				}
-				
-				unscannedNodeList.add(src);
-				nodeList.addNode(src);
 			}
-
 		}
+		
 		if (ValidationUtils.isValid(t_acno)) {
 			target = nodeList.getNode(t_acno);
 			if (target == null) {
-				G_IdType account;
 				try {
-					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
-					
-					target = new V_GenericNode(t_acno);
-					target.setIdType("account");
+					G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					target = createNode(t_acno, t_acname, "account", "#22FF22");
 					target.setNodeType(account.getName());
-					target.setIdVal(t_acno);
-					target.setValue(t_acno);
-					target.setLabel(t_acname);
-					target.setColor("#22FF22");
+					unscannedNodeList.add(target);
+					nodeList.addNode(target);
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
+					target = null;
 				}
-				
-				unscannedNodeList.add(target);
-				nodeList.addNode(target);
 			}
-
 		}
 
 		if (src != null && target != null) {
-			//Here, an event id is used, so we will get an edge per event.
-			String key = generateEdgeId(p.getPairId().toString());
 			
-			if (key != null && !edgeMap.containsKey(key)) {
-				G_EdgeType edgeType;
-				try {
-					edgeType = edgeTypeAccess.getEdgeType(G_CanonicalRelationshipType.OWNER_OF.name());
-					
-					V_GenericEdge v = new V_GenericEdge(src, target);
-					v.setIdType(edgeType.getName());
-					String subject = p.getTrnSubjStr();
-					String payload = p.getTrnValueStr();
-					String label = subject;
-					
-					// prune all but 1 "RE:" if it is present
-					int index = subject.lastIndexOf("RE:");
-					if (index > 0) { // i.e. index is not -1 or 0
-						label = subject.substring(index);
-					}
-					
-					if (label.length() > 15) {
-						label = label.substring(0, 15) + "...";
-					}
-					
-					v.setLabel(label);
-					v.setIdVal(edgeType.getName());
-					long dt = p.getTrnDt().getTime();
-					double value = p.getTrnValueNbr();
-					v.setDoubleValue(value);
-
-					v.addData("date", Long.toString(dt));
-					v.addData("amount", Double.toString(value));
-					v.addData("id", p.getPairId().toString());
-					v.addData("payload", payload);
-					v.addData("subject", subject);
-					edgeMap.put(key, v);
-				} catch (AvroRemoteException e) {
-					e.printStackTrace();
-				}
-			}else{
-				//Handle how multiple edges are aggregated.
+			String key = src.getId() + "->" + target.getId();
+			V_GenericEdge v = null;
+			G_EdgeType edgeType = null;
+			
+			try {
+				edgeType = edgeTypeAccess.getEdgeType(G_CanonicalRelationshipType.OWNER_OF.name());
+				v = createEdge(src, target, p);
+				v.setIdType(edgeType.getName());
+			} catch (AvroRemoteException e) {
+				e.printStackTrace();
+				v = null;
 			}
-
+			
+			if (v != null) {
+				if (!edgeMap.containsKey(key)) {
+					// Edge is unique, so add it to the edge map
+					edgeMap.put(key, v);
+				} else {
+					// Edge is not unique.  Add it to the existing aggregate edge
+					V_GenericEdge aggregateEdge = edgeMap.get(key);
+					aggregateEdge.addEdge(v);
+					int l = aggregateEdge.getEdges().size();
+					
+					aggregateEdge.addData("date_"+l,	v.getDataValue("date"));
+					aggregateEdge.addData("amount_"+l,	v.getDataValue("amount"));
+					aggregateEdge.addData("id_"+l,		v.getDataValue("id"));
+					aggregateEdge.addData("payload_"+l,	v.getDataValue("payload"));
+					aggregateEdge.addData("subject_"+l,	v.getDataValue("subject"));
+					aggregateEdge.addData("pairId_"+l,	v.getDataValue("pairId"));
+					
+					// We don't want a 1:1 mapping between # edges and width in pixels.
+					// For every five edges, increase the count by 1; minimum 1 width
+					int count = (int) Math.max(Math.ceil(l / 5), 1.0);
+					aggregateEdge.setCount(count);
+					aggregateEdge.setLabel("" + (l + 1));
+					
+					edgeMap.put(key, aggregateEdge);
+				}
+			}
 		}
 
 		return true;
+	}
+	
+	private V_GenericNode createNode(String acno, String acname, String idType, String color) {
+		V_GenericNode node = new V_GenericNode(acno);
+		node.setIdType(idType);
+		node.setIdVal(acno);
+		node.setValue(acno);
+		node.setLabel(acname);
+		node.setColor(color);
+		return node;
+	}
+	
+	private V_GenericEdge createEdge(V_GenericNode src, V_GenericNode target, WalkerTransactionPair100 p) {
+		V_GenericEdge e = new V_GenericEdge(src, target);
+		
+		String subject = p.getTrnSubjStr();
+		String payload = p.getTrnValueStr();
+		String label = subject;
+		
+		// prune all but 1 "RE:" if it is present
+		int index = subject.lastIndexOf("RE:");
+		if (index > 0) { // i.e. index is not -1 or 0
+			label = subject.substring(index);
+		}
+		
+		if (label.length() > 15) {
+			label = label.substring(0, 15) + "...";
+		}
+		
+		e.setLabel(label);
+
+		long dt = p.getTrnDt().getTime();
+		double value = p.getTrnValueNbr();
+		e.setDoubleValue(value);
+
+		e.addData("date", Long.toString(dt));
+		e.addData("amount", Double.toString(value));
+		e.addData("id", p.getPairId().toString());
+		e.addData("payload", payload);
+		e.addData("subject", subject);
+		e.addData("pairId", p.getPairId().toString());
+		
+		return e;
 	}
 	
 	@Override
