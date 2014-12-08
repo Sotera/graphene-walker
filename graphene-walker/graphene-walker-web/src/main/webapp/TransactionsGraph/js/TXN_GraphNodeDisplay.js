@@ -1,4 +1,4 @@
-DARPA.TXNGNodeDisplay.prototype.setAttrs = function(element) {
+DARPA.TransactionNodeDisplay.prototype.showEdgeAttrs = function(element) {
 	var self = this;
 	var html = "<table id='node_details_table' rules='rows'>";
 	var data = element.data();
@@ -114,4 +114,9 @@ DARPA.TXNGNodeDisplay.prototype.setAttrs = function(element) {
 			console.error("Unable to get email for the selected row");
 		}
 	};
+};
+
+// TODO move to TXN_GraphPanel overrides instead
+DARPA.TransactionGraphPanel.prototype.edgeRightClick = function(edge) {
+	// do nothing
 };
