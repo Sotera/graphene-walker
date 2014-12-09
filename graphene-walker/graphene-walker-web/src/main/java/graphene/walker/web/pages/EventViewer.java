@@ -44,8 +44,6 @@ public class EventViewer extends SimpleBasePage {
 
 	@Inject
 	private AjaxResponseRenderer ajaxResponseRenderer;
-	@Inject
-	private AlertManager alertManager;
 
 	@Inject
 	private BeanModelSource beanModelSource;
@@ -109,7 +107,7 @@ public class EventViewer extends SimpleBasePage {
 	private Logger logger;
 
 	@Inject
-	private AlertManager manager;
+	private AlertManager alertManager;
 
 	@Inject
 	private Messages messages;
@@ -171,7 +169,7 @@ public class EventViewer extends SimpleBasePage {
 			} catch (Exception ex) {
 				// record error to screen!
 				String message = ExceptionUtil.getRootCauseMessage(ex);
-				manager.alert(Duration.SINGLE, Severity.ERROR, "ERROR: "
+				alertManager.alert(Duration.SINGLE, Severity.ERROR, "ERROR: "
 						+ message);
 				logger.error(message);
 				events = new ArrayList<DirectedEventRow>();

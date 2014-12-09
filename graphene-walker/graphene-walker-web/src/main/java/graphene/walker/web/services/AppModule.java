@@ -38,7 +38,8 @@ public class AppModule {
 		// Use service builder methods (example below) when the implementation
 		// is provided inline, or requires more initialization than simply
 		// invoking the constructor.
-		binder.bind(SearchBrokerService.class, SearchBrokerServiceDefaultImpl.class);
+		binder.bind(SearchBrokerService.class,
+				SearchBrokerServiceDefaultImpl.class);
 	}
 
 	public static void contributeApplicationDefaults(
@@ -46,6 +47,8 @@ public class AppModule {
 		configuration.override(G_SymbolConstants.APPLICATION_NAME,
 				"Graphene-Walker");
 		configuration.override(SecuritySymbols.SUCCESS_URL, "/index");
+		configuration.add(G_SymbolConstants.EXT_PATH,
+				"/graphene-walker-web/index.html?&entity=");
 	}
 
 	public PropertiesFileSymbolProvider buildColorsSymbolProvider(Logger logger) {
