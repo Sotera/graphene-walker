@@ -7,6 +7,8 @@ import graphene.dao.EntityGraphDAO;
 import graphene.dao.EntityRefDAO;
 import graphene.dao.GroupDAO;
 import graphene.dao.IdTypeDAO;
+import graphene.dao.LoggingDAO;
+import graphene.dao.LoggingDAONullImpl;
 import graphene.dao.PermissionDAO;
 import graphene.dao.ReportPopulator;
 import graphene.dao.RoleDAO;
@@ -108,6 +110,7 @@ public class WalkerDAOModule {
 		binder.bind(GroupFunnel.class);
 		binder.bind(UserFunnel.class);
 		binder.bind(WorkspaceFunnel.class);
+		binder.bind(LoggingDAO.class, LoggingDAONullImpl.class);
 	}
 
 	final static String MAX_MEMDB_ROWS_PARAMETER = "graphene.memorydb-maxIndexRecords";
