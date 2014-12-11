@@ -15,10 +15,11 @@ import graphene.walker.dao.impl.IdTypeDAOSQLImpl;
 import graphene.walker.dao.impl.TransactionDAOSQLImpl;
 import graphene.walker.model.graphserver.GraphServerModule;
 import graphene.walker.model.memorydb.WalkerMemoryDB;
-import graphene.model.Funnel;
+import graphene.model.funnels.DefaultEntityLightFunnel;
+import graphene.model.funnels.Funnel;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
-import graphene.model.view.entities.DefaultEntityLightFunnel;
+import graphene.model.memorydb.MemoryDBModule;
 import graphene.services.EntityDAOImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
@@ -71,7 +72,7 @@ public class TestModule {
 			MappedConfiguration<String, String> configuration) {
 		configuration.add(MAX_MEMDB_ROWS_PARAMETER, "0");
 		configuration.add(USE_MEMDB_PARAMETER, "true");
-		configuration.add(G_SymbolConstants.CACHEFILELOCATION,
+		configuration.add(MemoryDBModule.CACHEFILELOCATION,
 				"%CATALINA_HOME%/data/WalkerEntityRefCache.data");
 	}
 
