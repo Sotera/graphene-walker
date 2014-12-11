@@ -14,6 +14,7 @@ import graphene.model.idl.G_SearchType;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
 import graphene.model.memorydb.MemRow;
+import graphene.model.memorydb.MemoryDBModule;
 import graphene.model.query.AdvancedSearch;
 import graphene.model.query.EntityQuery;
 import graphene.model.query.StringQuery;
@@ -65,7 +66,7 @@ public class EntityRefDAODiskImpl extends
 			DiskCache<WalkerEntityref100> diskCache,
 			IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO,
 			IMemoryDB<WalkerEntityref100, WalkerIdentifierType100, CustomerDetails> memDb,
-			@Symbol(G_SymbolConstants.CACHEFILELOCATION) String cacheFile) {
+			@Symbol(MemoryDBModule.CACHEFILELOCATION) String cacheFile) {
 		setCacheFileLocation(cacheFile);
 		setDiskCache(diskCache);
 		getDiskCache().init(WalkerEntityref100.class);
