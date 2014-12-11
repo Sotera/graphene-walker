@@ -29,9 +29,10 @@ import graphene.dao.neo4j.funnel.GroupFunnel;
 import graphene.dao.neo4j.funnel.UserFunnel;
 import graphene.dao.neo4j.funnel.WorkspaceFunnel;
 import graphene.dao.sql.DAOSQLModule;
-import graphene.model.Funnel;
+import graphene.model.funnels.Funnel;
 import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
+import graphene.model.memorydb.MemoryDBModule;
 import graphene.services.EntityDAOImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
@@ -113,15 +114,12 @@ public class WalkerDAOModule {
 		binder.bind(LoggingDAO.class, LoggingDAONullImpl.class);
 	}
 
-	final static String MAX_MEMDB_ROWS_PARAMETER = "graphene.memorydb-maxIndexRecords";
-	final static String USE_MEMDB_PARAMETER = "graphene.memorydb-useMemDB";
-
 	// added for testing --djue
 	public void contributeApplicationDefaults(
 			MappedConfiguration<String, String> configuration) {
-		configuration.add(MAX_MEMDB_ROWS_PARAMETER, "0");
-		configuration.add(USE_MEMDB_PARAMETER, "true");
-		configuration.add(G_SymbolConstants.CACHEFILELOCATION,
+		configuration.add(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER, "0");
+		configuration.add(MemoryDBModule.USE_MEMDB_PARAMETER, "true");
+		configuration.add(MemoryDBModule.CACHEFILELOCATION,
 				"%CATALINA_HOME%/data/WalkerEntityRefCache.data");
 	}
 
@@ -141,11 +139,11 @@ public class WalkerDAOModule {
 	@Startup
 	public static void scheduleJobs(ParallelExecutor executor,
 			final IMemoryDB memoryDb,
-			@Inject @Symbol(USE_MEMDB_PARAMETER) final String useMemoryDB,
-			@Inject @Symbol(MAX_MEMDB_ROWS_PARAMETER) final String maxRecords) {
+			@Inject @Symbol(MemoryDBModule.USE_MEMDB_PARAMETER) final String useMemoryDB,
+			@Inject @Symbol(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER) final String maxRecords) {
 
-		System.out.println(USE_MEMDB_PARAMETER + "=" + useMemoryDB);
-		System.out.println(MAX_MEMDB_ROWS_PARAMETER + "=" + maxRecords);
+		System.out.println(MemoryDBModule.USE_MEMDB_PARAMETER + "=" + useMemoryDB);
+		System.out.println(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER + "=" + maxRecords);
 		if ("true".equalsIgnoreCase(useMemoryDB)) {
 			System.out
 					.println("Scheduling parallel job to load in-memory database.");
