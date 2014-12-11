@@ -6,8 +6,8 @@ package graphene.walker.dao.impl;
 import java.util.List;
 
 import graphene.dao.CombinedDAO;
-import graphene.model.GrapheneResults;
 import graphene.model.query.EntityQuery;
+import graphene.model.view.GrapheneResults;
 import graphene.util.G_CallBack;
 
 /**
