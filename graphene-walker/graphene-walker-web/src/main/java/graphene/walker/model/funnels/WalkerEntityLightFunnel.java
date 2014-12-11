@@ -1,6 +1,6 @@
 package graphene.walker.model.funnels;
 
-import graphene.model.Funnel;
+import graphene.model.funnels.Funnel;
 import graphene.model.idl.G_Entity;
 import graphene.model.idl.G_Property;
 import graphene.model.idl.G_PropertyTag;

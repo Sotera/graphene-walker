@@ -1,7 +1,7 @@
 package graphene.walker.model.funnels;
 
 import graphene.walker.model.sql.walker.WalkerEntityref100;
-import graphene.model.Funnel;
+import graphene.model.funnels.Funnel;
 import graphene.model.view.entities.BasicEntityRef;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
