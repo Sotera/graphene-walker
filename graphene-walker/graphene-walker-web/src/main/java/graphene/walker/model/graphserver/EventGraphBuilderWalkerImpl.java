@@ -20,6 +20,7 @@ import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericGraph;
 import mil.darpa.vande.generic.V_GenericNode;
 import mil.darpa.vande.generic.V_GraphQuery;
+import mil.darpa.vande.generic.V_LegendItem;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -51,6 +52,8 @@ public class EventGraphBuilderWalkerImpl extends
 		this.propertyDAO = propertyDAO;
 		this.supportedDatasets.add("Walker");
 		this.supportedDatasets.add("events");
+		this.legendItems.add(new V_LegendItem("red", "Item you searched for."));
+		this.legendItems.add(new V_LegendItem("darkblue", "Selected item(s)."));
 	}
 
 	/**
@@ -76,6 +79,8 @@ public class EventGraphBuilderWalkerImpl extends
 					src.setNodeType(account.getName());
 					unscannedNodeList.add(src);
 					nodeList.addNode(src);
+					
+					legendItems.add(new V_LegendItem("#22FF22", account.getName()));
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
 					src = null;
@@ -92,6 +97,8 @@ public class EventGraphBuilderWalkerImpl extends
 					target.setNodeType(account.getName());
 					unscannedNodeList.add(target);
 					nodeList.addNode(target);
+					
+					legendItems.add(new V_LegendItem("#22FF22", account.getName()));
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
 					target = null;
