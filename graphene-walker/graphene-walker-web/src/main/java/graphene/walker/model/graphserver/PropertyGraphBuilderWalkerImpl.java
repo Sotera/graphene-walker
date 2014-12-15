@@ -247,4 +247,10 @@ public class PropertyGraphBuilderWalkerImpl extends
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean callBack(WalkerEntityref100 t, V_GraphQuery q) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

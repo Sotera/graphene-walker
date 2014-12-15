@@ -33,7 +33,8 @@ import org.slf4j.Logger;
  * 
  */
 public class EventGraphBuilderWalkerImpl extends
-		EventGraphBuilder<WalkerTransactionPair100> implements HyperGraphBuilder {
+		EventGraphBuilder<WalkerTransactionPair100> implements
+		HyperGraphBuilder {
 
 	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
 
@@ -61,17 +62,18 @@ public class EventGraphBuilderWalkerImpl extends
 
 		String s_acno = p.getSenderId().toString();
 		String s_acname = p.getSenderValueStr();
-		
+
 		String t_acno = p.getReceiverId().toString();
 		String t_acname = p.getReceiverValueStr();
 
 		V_GenericNode src = null, target = null;
-		
+
 		if (ValidationUtils.isValid(s_acno)) {
 			src = nodeList.getNode(s_acno);
 			if (src == null) {
 				try {
-					G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					G_IdType account = nodeTypeAccess
+							.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
 					src = createNode(s_acno, s_acname, "account", "#22FF22");
 					src.setNodeType(account.getName());
 					unscannedNodeList.add(src);
@@ -82,12 +84,13 @@ public class EventGraphBuilderWalkerImpl extends
 				}
 			}
 		}
-		
+
 		if (ValidationUtils.isValid(t_acno)) {
 			target = nodeList.getNode(t_acno);
 			if (target == null) {
 				try {
-					G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					G_IdType account = nodeTypeAccess
+							.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
 					target = createNode(t_acno, t_acname, "account", "#22FF22");
 					target.setNodeType(account.getName());
 					unscannedNodeList.add(target);
@@ -100,43 +103,51 @@ public class EventGraphBuilderWalkerImpl extends
 		}
 
 		if (src != null && target != null) {
-			
+
 			String key = src.getId() + "->" + target.getId();
 			V_GenericEdge v = null;
 			G_EdgeType edgeType = null;
-			
+
 			try {
-				edgeType = edgeTypeAccess.getEdgeType(G_CanonicalRelationshipType.OWNER_OF.name());
+				edgeType = edgeTypeAccess
+						.getEdgeType(G_CanonicalRelationshipType.OWNER_OF
+								.name());
 				v = createEdge(src, target, p);
 				v.setIdType(edgeType.getName());
 			} catch (AvroRemoteException e) {
 				e.printStackTrace();
 				v = null;
 			}
-			
+
 			if (v != null) {
 				if (!edgeMap.containsKey(key)) {
 					// Edge is unique, so add it to the edge map
 					edgeMap.put(key, v);
 				} else {
-					// Edge is not unique.  Add it to the existing aggregate edge
+					// Edge is not unique. Add it to the existing aggregate edge
 					V_GenericEdge aggregateEdge = edgeMap.get(key);
 					aggregateEdge.addEdge(v);
 					int l = aggregateEdge.getEdges().size();
-					
-					aggregateEdge.addData("date_"+l,	v.getDataValue("date"));
-					aggregateEdge.addData("amount_"+l,	v.getDataValue("amount"));
-					aggregateEdge.addData("id_"+l,		v.getDataValue("id"));
-					aggregateEdge.addData("payload_"+l,	v.getDataValue("payload"));
-					aggregateEdge.addData("subject_"+l,	v.getDataValue("subject"));
-					aggregateEdge.addData("pairId_"+l,	v.getDataValue("pairId"));
-					
-					// We don't want a 1:1 mapping between # edges and width in pixels.
-					// For every five edges, increase the count by 1; minimum 1 width
+
+					aggregateEdge.addData("date_" + l, v.getDataValue("date"));
+					aggregateEdge.addData("amount_" + l,
+							v.getDataValue("amount"));
+					aggregateEdge.addData("id_" + l, v.getDataValue("id"));
+					aggregateEdge.addData("payload_" + l,
+							v.getDataValue("payload"));
+					aggregateEdge.addData("subject_" + l,
+							v.getDataValue("subject"));
+					aggregateEdge.addData("pairId_" + l,
+							v.getDataValue("pairId"));
+
+					// We don't want a 1:1 mapping between # edges and width in
+					// pixels.
+					// For every five edges, increase the count by 1; minimum 1
+					// width
 					int count = (int) Math.max(Math.ceil(l / 5), 1.0);
 					aggregateEdge.setCount(count);
 					aggregateEdge.setLabel("" + (l + 1));
-					
+
 					edgeMap.put(key, aggregateEdge);
 				}
 			}
@@ -144,8 +155,9 @@ public class EventGraphBuilderWalkerImpl extends
 
 		return true;
 	}
-	
-	private V_GenericNode createNode(String acno, String acname, String idType, String color) {
+
+	private V_GenericNode createNode(String acno, String acname, String idType,
+			String color) {
 		V_GenericNode node = new V_GenericNode(acno);
 		node.setIdType(idType);
 		node.setIdVal(acno);
@@ -154,24 +166,25 @@ public class EventGraphBuilderWalkerImpl extends
 		node.setColor(color);
 		return node;
 	}
-	
-	private V_GenericEdge createEdge(V_GenericNode src, V_GenericNode target, WalkerTransactionPair100 p) {
+
+	private V_GenericEdge createEdge(V_GenericNode src, V_GenericNode target,
+			WalkerTransactionPair100 p) {
 		V_GenericEdge e = new V_GenericEdge(src, target);
-		
+
 		String subject = p.getTrnSubjStr();
 		String payload = p.getTrnValueStr();
 		String label = subject;
-		
+
 		// prune all but 1 "RE:" if it is present
 		int index = subject.lastIndexOf("RE:");
 		if (index > 0) { // i.e. index is not -1 or 0
 			label = subject.substring(index);
 		}
-		
+
 		if (label.length() > 15) {
 			label = label.substring(0, 15) + "...";
 		}
-		
+
 		e.setLabel(label);
 
 		long dt = p.getTrnDt().getTime();
@@ -184,17 +197,17 @@ public class EventGraphBuilderWalkerImpl extends
 		e.addData("payload", payload);
 		e.addData("subject", subject);
 		e.addData("pairId", p.getPairId().toString());
-		
+
 		return e;
 	}
-	
+
 	@Override
 	public void performPostProcess(V_GraphQuery graphQuery) {
 		Iterator<String> iter = graphQuery.getSearchIds().iterator();
-		
+
 		logger.debug("Performing post process");
 		String color = "red";
-		
+
 		while (iter.hasNext()) {
 			String id = iter.next();
 			try {
@@ -225,7 +238,7 @@ public class EventGraphBuilderWalkerImpl extends
 	@Override
 	public void buildQueryForNextIteration(V_GenericNode... nodes) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -246,6 +259,12 @@ public class EventGraphBuilderWalkerImpl extends
 
 	@Override
 	public boolean determineTraversability(V_GenericNode n) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean callBack(WalkerTransactionPair100 t, V_GraphQuery q) {
 		// TODO Auto-generated method stub
 		return false;
 	}

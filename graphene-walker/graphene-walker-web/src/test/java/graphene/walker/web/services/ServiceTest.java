@@ -24,7 +24,7 @@ public class ServiceTest {
 	protected Logger logger;
 	protected PropertyGraphBuilder pgb;
 	// protected InteractionGraphBuilder igb;
-	protected EntityRefDAO<WalkerEntityref100, EntityQuery> dao;
+	protected EntityRefDAO<WalkerEntityref100> dao;
 	protected TransactionDAO<WalkerTransactionPair100, EventQuery> transactionDAO;
 
 	// protected InteractionFinder interactionFinder;
@@ -45,9 +45,6 @@ public class ServiceTest {
 
 		RegistryBuilder builder = new RegistryBuilder();
 		builder.add(TestModule.class);
-		// builder.add(DAOSQLModule.class);
-		// builder.add(GraphServerModule.class);
-		// builder.add(WalkerDAOModule.class);
 		registry = builder.build();
 		registry.performRegistryStartup();
 		cp = registry.getService("GrapheneConnectionPool",

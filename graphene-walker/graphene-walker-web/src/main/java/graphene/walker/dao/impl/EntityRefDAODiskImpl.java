@@ -46,7 +46,7 @@ import com.mysema.query.types.path.StringPath;
 @ServiceId("Disk")
 public class EntityRefDAODiskImpl extends
 		AbstractDiskCacheDAOJDBC<WalkerEntityref100, EntityQuery> implements
-		EntityRefDAO<WalkerEntityref100, EntityQuery> {
+		EntityRefDAO<WalkerEntityref100> {
 
 	private static final long INITIAL_CHUNK_SIZE = 500000;
 	private static final long MAX_CHUNK_SIZE = 1000000;
@@ -63,7 +63,7 @@ public class EntityRefDAODiskImpl extends
 	private IMemoryDB<WalkerEntityref100, WalkerIdentifierType100, CustomerDetails> memDb;
 
 	public EntityRefDAODiskImpl(
-			DiskCache<WalkerEntityref100> diskCache,
+			DiskCache<WalkerEntityref100,EntityQuery> diskCache,
 			IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO,
 			IMemoryDB<WalkerEntityref100, WalkerIdentifierType100, CustomerDetails> memDb,
 			@Symbol(MemoryDBModule.CACHEFILELOCATION) String cacheFile) {
@@ -625,7 +625,7 @@ public class EntityRefDAODiskImpl extends
 
 	@Override
 	public boolean performCallback(long offset, long limit,
-			G_CallBack<WalkerEntityref100> cb, EntityQuery q) {
+			G_CallBack<WalkerEntityref100,EntityQuery> cb, EntityQuery q) {
 		boolean success = false;
 		if (memDb == null || !memDb.isLoaded()) {
 			// load the cache, which will load into memdb

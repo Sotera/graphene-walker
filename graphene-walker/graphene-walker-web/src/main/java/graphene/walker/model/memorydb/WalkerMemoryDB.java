@@ -6,6 +6,9 @@ import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.model.memorydb.AbstractMemoryDB;
 import graphene.model.memorydb.MemRow;
+import graphene.model.query.BasicQuery;
+import graphene.model.query.EntityQuery;
+import graphene.model.query.StringQuery;
 import graphene.model.view.entities.IdType;
 
 /**
@@ -22,11 +25,12 @@ import graphene.model.view.entities.IdType;
  * 
  */
 public class WalkerMemoryDB extends
-		AbstractMemoryDB<WalkerEntityref100, WalkerIdentifierType100> {
-public WalkerMemoryDB(EntityRefDAO<WalkerEntityref100, ?> dao,
-		IdTypeDAO<?, ?> idTypeDAO) {
-	super(dao, idTypeDAO);
-}
+		AbstractMemoryDB<WalkerEntityref100, WalkerIdentifierType100, EntityQuery> {
+	public WalkerMemoryDB(EntityRefDAO<WalkerEntityref100> dao,
+			IdTypeDAO<?, ?> idTypeDAO) {
+		super(dao, idTypeDAO);
+	}
+
 	/*
 	 * 
 	 */
@@ -54,8 +58,6 @@ public WalkerMemoryDB(EntityRefDAO<WalkerEntityref100, ?> dao,
 			// instance.
 			return true;
 		}
-
-		
 
 		if (state == STATE_LOAD_STRINGS) {
 			// this happens first
@@ -96,5 +98,11 @@ public WalkerMemoryDB(EntityRefDAO<WalkerEntityref100, ?> dao,
 		}
 		numProcessed++;
 		return true;
+	}
+
+	@Override
+	public boolean callBack(WalkerEntityref100 t, EntityQuery q) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

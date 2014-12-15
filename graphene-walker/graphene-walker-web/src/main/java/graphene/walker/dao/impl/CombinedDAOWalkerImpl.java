@@ -54,7 +54,7 @@ public class CombinedDAOWalkerImpl implements CombinedDAO {
 
 	@Override
 	public boolean performCallback(long offset, long maxResults,
-			G_CallBack<Object> cb, EntityQuery q) {
+			G_CallBack<Object,EntityQuery> cb, EntityQuery q) {
 		// TODO Auto-generated method stub
 		return false;
 	}

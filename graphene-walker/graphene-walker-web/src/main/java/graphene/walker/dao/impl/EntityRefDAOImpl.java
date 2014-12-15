@@ -43,7 +43,7 @@ import com.mysema.query.types.path.StringPath;
 
 public class EntityRefDAOImpl extends
 		GenericDAOJDBCImpl<WalkerEntityref100, EntityQuery> implements
-		EntityRefDAO<WalkerEntityref100, EntityQuery> {
+		EntityRefDAO<WalkerEntityref100> {
 	private static final long INITIAL_CHUNK_SIZE = 500000;
 	static Logger logger = LoggerFactory.getLogger(EntityRefDAOImpl.class);
 
@@ -619,7 +619,7 @@ public class EntityRefDAOImpl extends
 
 	@Override
 	public boolean performCallback(long offset, long maxResults,
-			G_CallBack<WalkerEntityref100> cb, EntityQuery q) {
+			G_CallBack<WalkerEntityref100,EntityQuery> cb, EntityQuery q) {
 
 		long MAX_VALUE = 100000000;
 		try {
