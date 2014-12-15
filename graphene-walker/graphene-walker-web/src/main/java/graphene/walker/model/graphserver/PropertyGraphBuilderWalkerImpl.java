@@ -17,6 +17,7 @@ import graphene.util.validator.ValidationUtils;
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericNode;
 import mil.darpa.vande.generic.V_GraphQuery;
+import mil.darpa.vande.generic.V_LegendItem;
 
 import org.apache.avro.AvroRemoteException;
 import org.apache.tapestry5.ioc.annotations.Inject;
@@ -43,6 +44,8 @@ public class PropertyGraphBuilderWalkerImpl extends
 		this.idTypeDAO = idTypeDAO;
 		this.dao = propertyDAO;
 		this.supportedDatasets.add("Walker");
+		this.legendItems.add(new V_LegendItem("red", "Item you searched for."));
+		this.legendItems.add(new V_LegendItem("darkblue", "Selected item(s)."));
 	}
 
 	/**
@@ -62,14 +65,16 @@ public class PropertyGraphBuilderWalkerImpl extends
 				G_IdType account;
 				try {
 					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
-					
+					String color = "#00FF00";
 					custNode = new V_GenericNode(custno);
 					custNode.setIdType("customer");
 					custNode.setNodeType(account.getName());
 					custNode.setIdVal(custno);
 					custNode.setValue(custno);
 					custNode.setLabel(custno);
-					custNode.setColor("#00FF00");
+					custNode.setColor(color);
+					
+					legendItems.add(new V_LegendItem(color, account.getName()));
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
 				}
@@ -97,16 +102,18 @@ public class PropertyGraphBuilderWalkerImpl extends
 				G_IdType account;
 				try {
 					account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
-					
+					String color = "#00FF00";
 					acnoNode = new V_GenericNode(acno);
 					acnoNode.setIdType(idTypeDAO.getNodeType(p.getIdtypeId()));
 					acnoNode.setNodeType(account.getName());
 					acnoNode.setIdVal(acno);
 					acnoNode.setValue(acno);
 					acnoNode.setLabel(acno);
-					acnoNode.setColor("#00FF00");
+					acnoNode.setColor(color);
 					unscannedNodeList.add(acnoNode);
 					nodeList.addNode(acnoNode);
+					
+					legendItems.add(new V_LegendItem(color, account.getName()));
 				} catch (AvroRemoteException e) {
 					e.printStackTrace();
 				}
@@ -138,14 +145,17 @@ public class PropertyGraphBuilderWalkerImpl extends
 				if (nodeType.equals(G_CanonicalPropertyType.PHONE.name())) {
 					//idNode.addProperty("color", "green");
 					idNode.setColor("#00FF00");
+					legendItems.add(new V_LegendItem("#00FF00", nodeType));
 				}
 				if (nodeType.equals(G_CanonicalPropertyType.EMAIL_ADDRESS.name())) {
 					//idNode.addProperty("color", "aqua");
 					idNode.setColor("#0088FF");
+					legendItems.add(new V_LegendItem("#0088FF", nodeType));
 				}
 				if (nodeType.equals(G_CanonicalPropertyType.ADDRESS.name())) {
 					//idNode.addProperty("color", "gray");
 					idNode.setColor("#888888");
+					legendItems.add(new V_LegendItem("#888888", nodeType));
 				}
 				unscannedNodeList.add(idNode);
 				nodeList.addNode(idNode);

@@ -235,8 +235,6 @@
 	<script type="text/javascript" src="core/js/cmp/shared/exportDialog.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/importDialog.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/ActivityLogger.js"></script>
-	<script type="text/javascript" src="core/js/cmp/shared/graphLayoutMenu.js"></script>
-	<script type="text/javascript" src="core/js/cmp/shared/graphManagerMenu.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/DetailsViewer.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/legendDefs.js"></script>
 	<script type="text/javascript" src="core/js/cmp/shared/leafletMapSubs.js"></script>
@@ -403,11 +401,6 @@
             // GLegend is global and accessible anywhere in the app
 			GLegend = new Legend();
 			GLegend.addLegendItems([
-				{groupNames: ["graph_legend"], color: "red", text: "Item you searched for."},
-				{groupNames: ["graph_legend"], color: "#22FF22", text: "Email Address."},
-				{groupNames: ["graph_legend"], color: "gray", text: "Shared Attributes."},
-				{groupNames: ["graph_legend"], color: "darkblue", text: "Selected Item(s)."},
-				//{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_magenta.png", text: "Expanded Nodes."},
 				{groupNames: ["graph_legend"], iconPath: Config.coreImagesUrl+"default_blackline.png", text: "Selected Link."}
 			]);
 			// if you only have one legend type in the app, setting the default makes it easier to access without having to
