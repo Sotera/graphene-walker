@@ -3,33 +3,53 @@
  */
 package graphene.walker.dao.impl;
 
-import java.util.List;
-
 import graphene.dao.CombinedDAO;
 import graphene.model.query.EntityQuery;
 import graphene.model.view.GrapheneResults;
 import graphene.util.G_CallBack;
 
+import java.util.List;
+
 /**
  * @author djue
- *
+ * 
  */
 public class CombinedDAOWalkerImpl implements CombinedDAO {
 
 	@Override
-	public List<Object> findByQuery(EntityQuery pq) throws Exception {
+	public long count(final EntityQuery q) throws Exception {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public List<Object> findById(final EntityQuery pq) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public List<Object> getAll(long offset, long maxResults) throws Exception {
+	public List<Object> findByQuery(final EntityQuery pq) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public long count(EntityQuery q) throws Exception {
+	public GrapheneResults<Object> findByQueryWithMeta(final EntityQuery pq)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Object> getAll(final long offset, final long maxResults)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public double getReadiness() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -41,29 +61,16 @@ public class CombinedDAOWalkerImpl implements CombinedDAO {
 	}
 
 	@Override
-	public void setReady(boolean b) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public double getReadiness() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean performCallback(long offset, long maxResults,
-			G_CallBack<Object,EntityQuery> cb, EntityQuery q) {
+	public boolean performCallback(final long offset, final long maxResults,
+			final G_CallBack<Object, EntityQuery> cb, final EntityQuery q) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public GrapheneResults<Object> findByQueryWithMeta(EntityQuery pq)
-			throws Exception {
+	public void setReady(final boolean b) {
 		// TODO Auto-generated method stub
-		return null;
+
 	}
 
 }

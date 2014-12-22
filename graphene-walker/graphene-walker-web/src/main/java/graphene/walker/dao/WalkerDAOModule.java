@@ -10,7 +10,6 @@ import graphene.dao.IdTypeDAO;
 import graphene.dao.LoggingDAO;
 import graphene.dao.LoggingDAONullImpl;
 import graphene.dao.PermissionDAO;
-import graphene.dao.ReportPopulator;
 import graphene.dao.RoleDAO;
 import graphene.dao.TransactionDAO;
 import graphene.dao.UserDAO;
@@ -30,7 +29,6 @@ import graphene.dao.neo4j.funnel.UserFunnel;
 import graphene.dao.neo4j.funnel.WorkspaceFunnel;
 import graphene.dao.sql.DAOSQLModule;
 import graphene.model.funnels.Funnel;
-import graphene.model.idl.G_SymbolConstants;
 import graphene.model.memorydb.IMemoryDB;
 import graphene.model.memorydb.MemoryDBModule;
 import graphene.services.EntityDAOImpl;
@@ -43,7 +41,6 @@ import graphene.walker.dao.impl.CombinedDAOWalkerImpl;
 import graphene.walker.dao.impl.DataSourceListDAOImpl;
 import graphene.walker.dao.impl.EntityRefDAOImpl;
 import graphene.walker.dao.impl.IdTypeDAOSQLImpl;
-import graphene.walker.dao.impl.ReportPopulatorImpl;
 import graphene.walker.dao.impl.TransactionDAOSQLImpl;
 import graphene.walker.model.funnels.WalkerEntityLightFunnel;
 import graphene.walker.model.memorydb.WalkerMemoryDB;
@@ -75,9 +72,8 @@ public class WalkerDAOModule {
 	private static Logger logger = LoggerFactory
 			.getLogger(WalkerDAOModule.class);
 
-	public static void bind(ServiceBinder binder) {
+	public static void bind(final ServiceBinder binder) {
 		binder.bind(CombinedDAO.class, CombinedDAOWalkerImpl.class);
-		binder.bind(ReportPopulator.class, ReportPopulatorImpl.class);
 		binder.bind(RoleDAO.class, SimpleRoleDAOImpl.class);
 		binder.bind(PermissionDAO.class, SimplePermissionDAOImpl.class);
 
@@ -114,15 +110,6 @@ public class WalkerDAOModule {
 		binder.bind(LoggingDAO.class, LoggingDAONullImpl.class);
 	}
 
-	// added for testing --djue
-	public void contributeApplicationDefaults(
-			MappedConfiguration<String, String> configuration) {
-		configuration.add(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER, "0");
-		configuration.add(MemoryDBModule.USE_MEMDB_PARAMETER, "true");
-		configuration.add(MemoryDBModule.CACHEFILELOCATION,
-				"%CATALINA_HOME%/data/WalkerEntityRefCache.data");
-	}
-
 	/**
 	 * Use this contribution to list the preferred drivers you would like to be
 	 * used. Note that the jar files still need to be on the classpath, for
@@ -132,18 +119,21 @@ public class WalkerDAOModule {
 	 */
 	@Contribute(JDBCUtil.class)
 	public static void contributeDesiredJDBCDriverClasses(
-			Configuration<String> configuration) {
+			final Configuration<String> configuration) {
 		configuration.add("org.hsqldb.jdbc.JDBCDriver");
 	}
 
 	@Startup
-	public static void scheduleJobs(ParallelExecutor executor,
+	public static void scheduleJobs(
+			final ParallelExecutor executor,
 			final IMemoryDB memoryDb,
 			@Inject @Symbol(MemoryDBModule.USE_MEMDB_PARAMETER) final String useMemoryDB,
 			@Inject @Symbol(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER) final String maxRecords) {
 
-		System.out.println(MemoryDBModule.USE_MEMDB_PARAMETER + "=" + useMemoryDB);
-		System.out.println(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER + "=" + maxRecords);
+		System.out.println(MemoryDBModule.USE_MEMDB_PARAMETER + "="
+				+ useMemoryDB);
+		System.out.println(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER + "="
+				+ maxRecords);
 		if ("true".equalsIgnoreCase(useMemoryDB)) {
 			System.out
 					.println("Scheduling parallel job to load in-memory database.");
@@ -159,8 +149,17 @@ public class WalkerDAOModule {
 	}
 
 	public PropertiesFileSymbolProvider buildTableNameSymbolProvider(
-			Logger logger) {
+			final Logger logger) {
 		return new PropertiesFileSymbolProvider(logger,
 				"tablenames.properties", true);
+	}
+
+	// added for testing --djue
+	public void contributeApplicationDefaults(
+			final MappedConfiguration<String, String> configuration) {
+		configuration.add(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER, "0");
+		configuration.add(MemoryDBModule.USE_MEMDB_PARAMETER, "true");
+		configuration.add(MemoryDBModule.CACHEFILELOCATION,
+				"%CATALINA_HOME%/data/WalkerEntityRefCache.data");
 	}
 }

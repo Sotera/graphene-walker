@@ -2,6 +2,7 @@ package graphene.walker.model.graphserver;
 
 import java.util.Iterator;
 
+import graphene.dao.DocumentGraphParser;
 import graphene.dao.EntityRefDAO;
 import graphene.dao.GenericDAO;
 import graphene.dao.IdTypeDAO;
@@ -38,7 +39,22 @@ public class EventGraphBuilderWalkerImpl extends
 		HyperGraphBuilder {
 
 	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
-
+	public DocumentGraphParser getParserForObject(Object obj) {
+//		if (obj == null) {
+//			logger.warn("Object was invalid");
+//			return null;
+//		}
+//		for (DocumentGraphParser s : singletons) {
+//			if (s.getSupportedObjects().contains(
+//					obj.getClass().getCanonicalName())) {
+//				logger.debug("Found service " + s.getClass().getCanonicalName());
+//				return s;
+//			}
+//		}
+//		logger.debug("No handler for class "
+//				+ obj.getClass().getCanonicalName());
+		return null;
+	}
 	@Inject
 	Logger logger;
 
