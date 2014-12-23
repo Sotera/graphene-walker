@@ -3,7 +3,6 @@ package graphene.walker.web.pages;
 import graphene.dao.TransactionDAO;
 import graphene.model.idl.G_VisualType;
 import graphene.model.query.EventQuery;
-import graphene.model.query.SearchCriteria;
 import graphene.model.view.events.DirectedEventRow;
 import graphene.util.ExceptionUtil;
 import graphene.util.validator.ValidationUtils;
@@ -22,7 +21,6 @@ import org.apache.tapestry5.alerts.Severity;
 import org.apache.tapestry5.annotations.InjectComponent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
-import org.apache.tapestry5.annotations.SessionState;
 import org.apache.tapestry5.beaneditor.BeanModel;
 import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.grid.GridDataSource;
@@ -47,24 +45,6 @@ public class EventViewer extends SimpleBasePage {
 
 	@Inject
 	private BeanModelSource beanModelSource;
-	@SessionState
-	@Property
-	private SearchCriteria criteria;
-
-	/**
-	 * @return the senderName
-	 */
-	public final String getSenderName() {
-		return currentEvent.getData().get("senderValue");
-	}
-
-	/**
-	 * @return the receiverName
-	 */
-	public final String getReceiverName() {
-		return currentEvent.getData().get("receiverValue");
-
-	}
 
 	@Persist
 	@Property
@@ -80,18 +60,14 @@ public class EventViewer extends SimpleBasePage {
 
 	private String drillDownId;
 
-	// @InjectComponent
-	// private Zone drillDownZone;
-
 	@Property
 	private List<DirectedEventRow> events;
 
 	@Property
-	private GridDataSource gds = new DirectedEventDataSource(dao);
+	private final GridDataSource gds = new DirectedEventDataSource(dao);
 
-	// /////////////////////////////////////////////////////////////////////
-	// FILTER
-	// /////////////////////////////////////////////////////////////////////
+	// @InjectComponent
+	// private Zone drillDownZone;
 
 	@Property
 	@Persist
@@ -99,6 +75,10 @@ public class EventViewer extends SimpleBasePage {
 
 	@Property
 	private DirectedEventRow currentEvent;
+
+	// /////////////////////////////////////////////////////////////////////
+	// FILTER
+	// /////////////////////////////////////////////////////////////////////
 
 	@InjectComponent
 	private Zone listZone;
@@ -133,8 +113,8 @@ public class EventViewer extends SimpleBasePage {
 	}
 
 	public BeanModel getModel() {
-		BeanModel<DirectedEventRow> model = beanModelSource.createEditModel(
-				DirectedEventRow.class, messages);
+		final BeanModel<DirectedEventRow> model = beanModelSource
+				.createEditModel(DirectedEventRow.class, messages);
 		model.exclude("comments", "credit", "dateMilliSeconds",
 				"day_one_based", "debit", "localUnitBalance", "unit",
 				"unitBalance", "year", "receiverId", "senderId", "id");
@@ -145,11 +125,26 @@ public class EventViewer extends SimpleBasePage {
 		return model;
 	}
 
+	/**
+	 * @return the receiverName
+	 */
+	public final String getReceiverName() {
+		return currentEvent.getData().get("receiverValue");
+
+	}
+
+	/**
+	 * @return the senderName
+	 */
+	public final String getSenderName() {
+		return currentEvent.getData().get("senderValue");
+	}
+
 	public String getZoneUpdateFunction() {
 		return highlightZoneUpdates ? "highlight" : "show";
 	}
 
-	void onActivate(String searchValue) {
+	void onActivate(final String searchValue) {
 		this.searchValue = searchValue;
 	}
 
@@ -158,17 +153,17 @@ public class EventViewer extends SimpleBasePage {
 	}
 
 	void onSuccessFromFilterForm() {
-		if (events == null || events.isEmpty()
+		if ((events == null) || events.isEmpty()
 				|| !previousId.equalsIgnoreCase(searchValue)) {
 			// don't use cached version.
-			EventQuery q = new EventQuery();
+			final EventQuery q = new EventQuery();
 			q.addId(searchValue);
 			try {
 				// FIXME: Need to set limit and offset in query object
 				events = dao.getEvents(q);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				// record error to screen!
-				String message = ExceptionUtil.getRootCauseMessage(ex);
+				final String message = ExceptionUtil.getRootCauseMessage(ex);
 				alertManager.alert(Duration.SINGLE, Severity.ERROR, "ERROR: "
 						+ message);
 				logger.error(message);
@@ -187,18 +182,18 @@ public class EventViewer extends SimpleBasePage {
 	 */
 	void setupRender() {
 		if (ValidationUtils.isValid(searchValue)) {
-			EventQuery e = new EventQuery();
+			final EventQuery e = new EventQuery();
 			e.addId(searchValue);
 			try {
 				events = dao.getEvents(e);
-			} catch (Exception e1) {
+			} catch (final Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		} else {
 			events = new ArrayList();
 		}
-		
+
 	}
 
 }
