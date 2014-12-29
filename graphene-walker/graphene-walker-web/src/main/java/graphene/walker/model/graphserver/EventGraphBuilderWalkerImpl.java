@@ -273,14 +273,6 @@ public class EventGraphBuilderWalkerImpl extends
 	}
 
 	@Override
-	public V_GenericNode createOrUpdateNode(String id, String idType,
-			String nodeType, V_GenericNode attachTo, String relationType,
-			String relationValue, String forceColor) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public boolean determineTraversability(V_GenericNode n) {
 		// TODO Auto-generated method stub
 		return false;
@@ -290,5 +282,14 @@ public class EventGraphBuilderWalkerImpl extends
 	public boolean callBack(WalkerTransactionPair100 t, V_GraphQuery q) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(double minimumScoreRequired,
+			double inheritedScore, double localPriority, String id,
+			String idType, String nodeType, V_GenericNode attachTo,
+			String relationType, String relationValue, double nodeCertainty) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
