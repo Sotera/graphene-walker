@@ -6,6 +6,8 @@ import graphene.model.datasourcedescriptors.DataSetField;
 import graphene.model.datasourcedescriptors.DataSource;
 import graphene.model.datasourcedescriptors.DataSourceList;
 
+import java.util.List;
+
 /**
  * A DAO to return a list of available Data Sets. In some environments this is
  * done via a server call, so it should be an injected implementation.
@@ -20,6 +22,18 @@ public class DataSourceListDAOImpl implements DataSourceListDAO {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public List<String> getAvailableTypes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getDefaultSchema() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/**
 	 * Return a list of datasets for use by the rest service. These lists are
 	 * used by the gui to allow users to choose a list, and to configure the
@@ -28,15 +42,17 @@ public class DataSourceListDAOImpl implements DataSourceListDAO {
 	 * @author PWG for DARPA
 	 * 
 	 */
+	@Override
 	public DataSourceList getList() {
-		if (dataSourceList == null)
+		if (dataSourceList == null) {
 			dataSourceList = loadList();
+		}
 
 		return dataSourceList;
 	}
 
 	private DataSourceList loadList() {
-		DataSourceList list = new DataSourceList();
+		final DataSourceList list = new DataSourceList();
 		// such datasource
 		list.addSource(makeWalker());
 		// add more data sources here if you want. wow.
@@ -44,7 +60,7 @@ public class DataSourceListDAOImpl implements DataSourceListDAO {
 	}
 
 	private DataSource makeWalker() {
-		DataSource dataSource = new DataSource();
+		final DataSource dataSource = new DataSource();
 		DataSet ds = new DataSet();
 
 		dataSource.setId("Walker");
@@ -57,10 +73,12 @@ public class DataSourceListDAOImpl implements DataSourceListDAO {
 		ds.setEntity(true);
 		ds.setTransaction(false);
 
-		//TODO expand with more fields
-		
-		ds.addField(new DataSetField("name", "Name", "string", false, true, true));
-		ds.addField(new DataSetField("email", "Email Address", "string", false, true, true));
+		// TODO expand with more fields
+
+		ds.addField(new DataSetField("name", "Name", "string", false, true,
+				true));
+		ds.addField(new DataSetField("email", "Email Address", "string", false,
+				true, true));
 		dataSource.addDataSet(ds);
 
 		ds = new DataSet();
