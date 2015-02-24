@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>graphene-walker</groupId>
 		<artifactId>graphene-walker</artifactId>
-		<version>4.1.0-SNAPSHOT</version>
+		<version>4.1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>graphene-walker-ingest</artifactId>
 	<description>Ingest scripts and utilities that should not be deployed on a web server.</description>
@@ -13,14 +13,6 @@
 		<dependency>
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-ingest</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${base.project.groupId}</groupId>
-			<artifactId>graphene-model</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${base.project.groupId}</groupId>
-			<artifactId>graphene-dao</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${base.project.groupId}</groupId>
@@ -33,10 +25,6 @@
 		<dependency>
 			<groupId>${base.project.groupId}</groupId>
 			<artifactId>graphene-dao-titan</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>${base.project.groupId}</groupId>
-			<artifactId>graphene-util</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>${base.project.groupId}</groupId>
