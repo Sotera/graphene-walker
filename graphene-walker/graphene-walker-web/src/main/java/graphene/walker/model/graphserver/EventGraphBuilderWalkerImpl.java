@@ -184,7 +184,7 @@ public class EventGraphBuilderWalkerImpl extends
 		V_GenericNode node = new V_GenericNode(acno);
 		node.setIdType(idType);
 		node.setIdVal(acno);
-		node.setValue(acno);
+		//node.setValue(acno);
 		node.setLabel(acname);
 		node.setColor(color);
 		return node;
