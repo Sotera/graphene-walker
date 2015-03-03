@@ -86,7 +86,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 					custNode.setIdType("customer");
 					custNode.setNodeType(account.getName());
 					custNode.setIdVal(custno);
-					custNode.setValue(custno);
+					//custNode.setValue(custno);
 					custNode.setLabel(custno);
 					custNode.setColor(color);
 					
@@ -101,9 +101,9 @@ public class PropertyGraphBuilderWalkerImpl extends
 				 */
 				if (ValidationUtils.isValid(identifier)) {
 					int idTypeId = p.getIdtypeId();
-					custNode.addProperty("ShortName", idTypeDAO.getShortName(idTypeId));
-					custNode.addProperty("Value", identifier);
-					custNode.addProperty("Family", idTypeDAO.getNodeType(idTypeId));
+					custNode.addData("ShortName", idTypeDAO.getShortName(idTypeId));
+					custNode.addData("Value", identifier);
+					custNode.addData("Family", idTypeDAO.getNodeType(idTypeId));
 
 				}
 				unscannedNodeList.add(custNode);
@@ -123,7 +123,7 @@ public class PropertyGraphBuilderWalkerImpl extends
 					acnoNode.setIdType(idTypeDAO.getNodeType(p.getIdtypeId()));
 					acnoNode.setNodeType(account.getName());
 					acnoNode.setIdVal(acno);
-					acnoNode.setValue(acno);
+					//acnoNode.setValue(acno);
 					acnoNode.setLabel(acno);
 					acnoNode.setColor(color);
 					unscannedNodeList.add(acnoNode);
@@ -147,13 +147,13 @@ public class PropertyGraphBuilderWalkerImpl extends
 				acnoNode.setNodeType(nodeType);
 				idNode.setIdType(nodeType);
 				idNode.setIdVal(identifier);
-				idNode.setValue(identifier);
+				//idNode.setValue(identifier);
 				idNode.setLabel(identifier);
 				//idNode.addProperty(idFamily, identifier);
 				if (custNode != null) {
 					// also add it to the customer, this is a legacy thing to
 					// embed more data in the important nodes. --djue
-					custNode.addProperty(nodeType, identifier);
+					custNode.addData(nodeType, identifier);
 				}
 				
 				//TODO: adjust these properties, as they may not be relevant/correct
