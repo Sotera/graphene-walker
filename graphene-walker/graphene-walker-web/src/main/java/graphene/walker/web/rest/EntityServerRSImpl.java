@@ -24,6 +24,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@Deprecated
 public class EntityServerRSImpl implements EntityServerRS {
 
 	@Inject
@@ -39,16 +40,14 @@ public class EntityServerRSImpl implements EntityServerRS {
 	@GET
 	@Path("/advancedSearch")
 	@Produces("application/json")
-	public EntitySearchResults advancedSearch(
-			@QueryParam("jsonSearch") final String jsonSearch) {
+	public EntitySearchResults advancedSearch(@QueryParam("jsonSearch") final String jsonSearch) {
 		final TimeReporter t = new TimeReporter("advancedSearch", logger);
 		logger.trace("json search: " + jsonSearch);
 		final ObjectMapper mapper = new ObjectMapper();
 		final byte[] bytes = jsonSearch.getBytes();
 		AdvancedSearch search = null;
 		try {
-			search = mapper.readValue(bytes, 0, bytes.length,
-					AdvancedSearch.class);
+			search = mapper.readValue(bytes, 0, bytes.length, AdvancedSearch.class);
 		} catch (final JsonParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,8 +65,7 @@ public class EntityServerRSImpl implements EntityServerRS {
 		} else {
 			logger.trace(search.getDataSet());
 			search.setFieldsIntoFilters(dataSourceListDAO.getList());
-			final List<EntityLight> entities = entitydao
-					.getLightEntitiesByAdvancedSearch(search);
+			final List<EntityLight> entities = entitydao.getLightEntitiesByAdvancedSearch(search);
 			results.addEntities(entities);
 		}
 		t.logAsCompleted();

@@ -15,11 +15,11 @@ import graphene.model.memorydb.IMemoryDB;
 import graphene.model.memorydb.MemRow;
 import graphene.model.query.AdvancedSearch;
 import graphene.model.query.EntityQuery;
+import graphene.model.query.G_CallBack;
 import graphene.model.query.StringQuery;
 import graphene.model.view.entities.BasicEntityRef;
 import graphene.util.ExceptionUtil;
 import graphene.util.FastNumberUtils;
-import graphene.util.G_CallBack;
 import graphene.util.validator.ValidationUtils;
 
 import java.sql.Connection;
@@ -42,7 +42,7 @@ import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.path.StringPath;
 
 public class EntityRefDAOImpl extends
-		GenericDAOJDBCImpl<WalkerEntityref100, EntityQuery> implements
+		GenericDAOJDBCImpl<WalkerEntityref100, G_EntityQuery> implements
 		EntityRefDAO<WalkerEntityref100> {
 	private static final long INITIAL_CHUNK_SIZE = 500000;
 	static Logger logger = LoggerFactory.getLogger(EntityRefDAOImpl.class);
@@ -525,7 +525,7 @@ public class EntityRefDAOImpl extends
 				results.add(memRowToDBEntry(r));
 			}
 		} else {
-			EntityQuery q = new EntityQuery();
+			EntityQuery q =  G_EntityQuery.newBuilder();
 
 			G_SearchTuple<String> srch = new G_SearchTuple<String>();
 			srch.setSearchType(G_SearchType.COMPARE_EQUALS);
@@ -619,7 +619,7 @@ public class EntityRefDAOImpl extends
 
 	@Override
 	public boolean performCallback(long offset, long maxResults,
-			G_CallBack<WalkerEntityref100,EntityQuery> cb, EntityQuery q) {
+			G_CallBack<WalkerEntityref100,EntityQuery> cb, G_EntityQuery q) {
 
 		long MAX_VALUE = 100000000;
 		try {

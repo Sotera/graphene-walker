@@ -1,7 +1,7 @@
 package graphene.walker.dao.impl;
 
+import graphene.dao.AbstractIdTypeDAO;
 import graphene.dao.IdTypeDAO;
-import graphene.dao.sql.AbstractIdTypeDAO;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.QWalkerIdentifierType100;
 import graphene.model.idl.G_CanonicalPropertyType;

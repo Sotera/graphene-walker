@@ -1,12 +1,13 @@
 package graphene.walker.dao.impl;
 
+import graphene.dao.AbstractDiskCacheDAOJDBC;
 import graphene.dao.EntityRefDAO;
 import graphene.dao.IdTypeDAO;
-import graphene.dao.sql.AbstractDiskCacheDAOJDBC;
 import graphene.walker.model.funnels.BasicEntityRefFunnel;
 import graphene.walker.model.sql.walker.WalkerEntityref100;
 import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 import graphene.walker.model.sql.walker.QWalkerEntityref100;
+import graphene.model.diskcache.DiskCache;
 import graphene.model.idl.G_CanonicalPropertyType;
 import graphene.model.idl.G_IdType;
 import graphene.model.idl.G_SearchTuple;
@@ -17,12 +18,11 @@ import graphene.model.memorydb.MemRow;
 import graphene.model.memorydb.MemoryDBModule;
 import graphene.model.query.AdvancedSearch;
 import graphene.model.query.EntityQuery;
+import graphene.model.query.G_CallBack;
 import graphene.model.query.StringQuery;
 import graphene.model.view.entities.BasicEntityRef;
 import graphene.model.view.entities.CustomerDetails;
 import graphene.util.FastNumberUtils;
-import graphene.util.G_CallBack;
-import graphene.util.fs.DiskCache;
 import graphene.util.validator.ValidationUtils;
 
 import java.sql.Connection;
@@ -45,7 +45,7 @@ import com.mysema.query.types.path.StringPath;
 
 @ServiceId("Disk")
 public class EntityRefDAODiskImpl extends
-		AbstractDiskCacheDAOJDBC<WalkerEntityref100, EntityQuery> implements
+		AbstractDiskCacheDAOJDBC<WalkerEntityref100, G_EntityQuery> implements
 		EntityRefDAO<WalkerEntityref100> {
 
 	private static final long INITIAL_CHUNK_SIZE = 500000;
@@ -529,7 +529,7 @@ public class EntityRefDAODiskImpl extends
 				results.add(memRowToDBEntry(r));
 			}
 		} else {
-			EntityQuery q = new EntityQuery();
+			EntityQuery q =  G_EntityQuery.newBuilder();
 
 			G_SearchTuple<String> srch = new G_SearchTuple<String>();
 			srch.setSearchType(G_SearchType.COMPARE_EQUALS);
@@ -625,7 +625,7 @@ public class EntityRefDAODiskImpl extends
 
 	@Override
 	public boolean performCallback(long offset, long limit,
-			G_CallBack<WalkerEntityref100,EntityQuery> cb, EntityQuery q) {
+			G_CallBack<WalkerEntityref100,EntityQuery> cb, G_EntityQuery q) {
 		boolean success = false;
 		if (memDb == null || !memDb.isLoaded()) {
 			// load the cache, which will load into memdb

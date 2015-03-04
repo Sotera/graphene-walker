@@ -25,7 +25,7 @@ import graphene.model.view.entities.IdType;
  * 
  */
 public class WalkerMemoryDB extends
-		AbstractMemoryDB<WalkerEntityref100, WalkerIdentifierType100, EntityQuery> {
+		AbstractMemoryDB<WalkerEntityref100, WalkerIdentifierType100, G_EntityQuery> {
 	public WalkerMemoryDB(EntityRefDAO<WalkerEntityref100> dao,
 			IdTypeDAO<?, ?> idTypeDAO) {
 		super(dao, idTypeDAO);
@@ -101,7 +101,7 @@ public class WalkerMemoryDB extends
 	}
 
 	@Override
-	public boolean callBack(WalkerEntityref100 t, EntityQuery q) {
+	public boolean callBack(WalkerEntityref100 t, G_EntityQuery q) {
 		// TODO Auto-generated method stub
 		return false;
 	}
