@@ -1,22 +1,20 @@
 package graphene.walker.model.graphserver;
 
-import java.util.Iterator;
-
-import graphene.dao.DocumentGraphParser;
-import graphene.dao.EntityRefDAO;
-import graphene.dao.GenericDAO;
-import graphene.dao.IdTypeDAO;
-import graphene.dao.TransactionDAO;
-import graphene.walker.model.sql.walker.WalkerIdentifierType100;
-import graphene.walker.model.sql.walker.WalkerTransactionPair100;
+import graphene.dao.G_Parser;
+import graphene.dao.HyperGraphBuilder;
 import graphene.model.idl.G_CanonicalPropertyType;
 import graphene.model.idl.G_CanonicalRelationshipType;
+import graphene.model.idl.G_DocumentError;
 import graphene.model.idl.G_EdgeType;
+import graphene.model.idl.G_EntityQuery;
 import graphene.model.idl.G_IdType;
-import graphene.model.query.StringQuery;
-import graphene.services.EventGraphBuilder;
-import graphene.services.HyperGraphBuilder;
+import graphene.model.idl.G_Property;
 import graphene.util.validator.ValidationUtils;
+import graphene.walker.model.sql.walker.WalkerIdentifierType100;
+import graphene.walker.model.sql.walker.WalkerTransactionPair100;
+
+import java.util.Iterator;
+
 import mil.darpa.vande.generic.V_GenericEdge;
 import mil.darpa.vande.generic.V_GenericGraph;
 import mil.darpa.vande.generic.V_GenericNode;
@@ -34,56 +32,59 @@ import org.slf4j.Logger;
  * @author djue
  * 
  */
-public class EventGraphBuilderWalkerImpl extends
-		EventGraphBuilder<WalkerTransactionPair100> implements
+public class EventGraphBuilderWalkerImpl extends EventGraphBuilder<WalkerTransactionPair100> implements
 		HyperGraphBuilder {
 
-	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
-	public DocumentGraphParser getParserForObject(Object obj) {
-//		if (obj == null) {
-//			logger.warn("Object was invalid");
-//			return null;
-//		}
-//		for (DocumentGraphParser s : singletons) {
-//			if (s.getSupportedObjects().contains(
-//					obj.getClass().getCanonicalName())) {
-//				logger.debug("Found service " + s.getClass().getCanonicalName());
-//				return s;
-//			}
-//		}
-//		logger.debug("No handler for class "
-//				+ obj.getClass().getCanonicalName());
-		return null;
-	}
+	private final IdTypeDAO<WalkerIdentifierType100> idTypeDAO;
 	@Inject
 	Logger logger;
-
-	private EntityRefDAO propertyDAO;
+	private final EntityRefDAO propertyDAO;
 
 	@Inject
-	public EventGraphBuilderWalkerImpl(IdTypeDAO idTypeDAO, TransactionDAO dao,
-			EntityRefDAO propertyDAO) {
+	public EventGraphBuilderWalkerImpl(final IdTypeDAO idTypeDAO, final TransactionDAO dao,
+			final EntityRefDAO propertyDAO) {
 		super();
 		this.idTypeDAO = idTypeDAO;
 		this.dao = dao;
 		this.propertyDAO = propertyDAO;
-		this.supportedDatasets.add("Walker");
-		this.supportedDatasets.add("events");
-		this.legendItems.add(new V_LegendItem("red", "Item you searched for."));
-		this.legendItems.add(new V_LegendItem("darkblue", "Selected item(s)."));
+		supportedDatasets.add("Walker");
+		supportedDatasets.add("events");
+		legendItems.add(new V_LegendItem("red", "Item you searched for."));
+		legendItems.add(new V_LegendItem("darkblue", "Selected item(s)."));
+	}
+
+	public void addError(final G_DocumentError e) {
+	}
+
+	public void addGraphQueryPath(final V_GenericNode reportNode, final G_EntityQuery q) {
+	}
+
+	public V_GenericNode addReportDetails(final V_GenericNode reportNode, final Map<String, G_Property> props,
+			final String reportLinkTitle, final String url) {
+		return null;
+	}
+
+	@Override
+	public void addScannedResult(final String reportId) {
+	}
+
+	@Override
+	public void buildQueryForNextIteration(final V_GenericNode... nodes) {
+		// TODO Auto-generated method stub
+
 	}
 
 	/**
 	 * This callback just creates the nodes and edges from a single row.
 	 */
 	@Override
-	public boolean callBack(WalkerTransactionPair100 p) {
+	public boolean callBack(final WalkerTransactionPair100 p) {
 
-		String s_acno = p.getSenderId().toString();
-		String s_acname = p.getSenderValueStr();
+		final String s_acno = p.getSenderId().toString();
+		final String s_acname = p.getSenderValueStr();
 
-		String t_acno = p.getReceiverId().toString();
-		String t_acname = p.getReceiverValueStr();
+		final String t_acno = p.getReceiverId().toString();
+		final String t_acname = p.getReceiverValueStr();
 
 		V_GenericNode src = null, target = null;
 
@@ -91,15 +92,14 @@ public class EventGraphBuilderWalkerImpl extends
 			src = nodeList.getNode(s_acno);
 			if (src == null) {
 				try {
-					G_IdType account = nodeTypeAccess
-							.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					final G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
 					src = createNode(s_acno, s_acname, "account", "#22FF22");
 					src.setNodeType(account.getName());
 					unscannedNodeList.add(src);
 					nodeList.addNode(src);
-					
+
 					legendItems.add(new V_LegendItem("#22FF22", account.getName()));
-				} catch (AvroRemoteException e) {
+				} catch (final AvroRemoteException e) {
 					e.printStackTrace();
 					src = null;
 				}
@@ -110,34 +110,30 @@ public class EventGraphBuilderWalkerImpl extends
 			target = nodeList.getNode(t_acno);
 			if (target == null) {
 				try {
-					G_IdType account = nodeTypeAccess
-							.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
+					final G_IdType account = nodeTypeAccess.getNodeType(G_CanonicalPropertyType.ACCOUNT.name());
 					target = createNode(t_acno, t_acname, "account", "#22FF22");
 					target.setNodeType(account.getName());
 					unscannedNodeList.add(target);
 					nodeList.addNode(target);
-					
+
 					legendItems.add(new V_LegendItem("#22FF22", account.getName()));
-				} catch (AvroRemoteException e) {
+				} catch (final AvroRemoteException e) {
 					e.printStackTrace();
 					target = null;
 				}
 			}
 		}
 
-		if (src != null && target != null) {
+		if ((src != null) && (target != null)) {
 
-			String key = src.getId() + "->" + target.getId();
+			final String key = src.getId() + "->" + target.getId();
 			V_GenericEdge v = null;
-			G_EdgeType edgeType = null;
+			final G_EdgeType edgeType = null;
 
 			try {
-				edgeType = edgeTypeAccess
-						.getEdgeType(G_CanonicalRelationshipType.OWNER_OF
-								.name());
 				v = createEdge(src, target, p);
-				v.setIdType(edgeType.getName());
-			} catch (AvroRemoteException e) {
+				v.setIdType(G_CanonicalRelationshipType.OWNER_OF.name());
+			} catch (final AvroRemoteException e) {
 				e.printStackTrace();
 				v = null;
 			}
@@ -148,26 +144,22 @@ public class EventGraphBuilderWalkerImpl extends
 					edgeMap.put(key, v);
 				} else {
 					// Edge is not unique. Add it to the existing aggregate edge
-					V_GenericEdge aggregateEdge = edgeMap.get(key);
+					final V_GenericEdge aggregateEdge = edgeMap.get(key);
 					aggregateEdge.addEdge(v);
-					int l = aggregateEdge.getEdges().size();
+					final int l = aggregateEdge.getEdges().size();
 
 					aggregateEdge.addData("date_" + l, v.getDataValue("date"));
-					aggregateEdge.addData("amount_" + l,
-							v.getDataValue("amount"));
+					aggregateEdge.addData("amount_" + l, v.getDataValue("amount"));
 					aggregateEdge.addData("id_" + l, v.getDataValue("id"));
-					aggregateEdge.addData("payload_" + l,
-							v.getDataValue("payload"));
-					aggregateEdge.addData("subject_" + l,
-							v.getDataValue("subject"));
-					aggregateEdge.addData("pairId_" + l,
-							v.getDataValue("pairId"));
+					aggregateEdge.addData("payload_" + l, v.getDataValue("payload"));
+					aggregateEdge.addData("subject_" + l, v.getDataValue("subject"));
+					aggregateEdge.addData("pairId_" + l, v.getDataValue("pairId"));
 
 					// We don't want a 1:1 mapping between # edges and width in
 					// pixels.
 					// For every five edges, increase the count by 1; minimum 1
 					// width
-					int count = (int) Math.max(Math.ceil(l / 5), 1.0);
+					final int count = (int) Math.max(Math.ceil(l / 5), 1.0);
 					aggregateEdge.setCount(count);
 					aggregateEdge.setLabel("" + (l + 1));
 
@@ -179,27 +171,22 @@ public class EventGraphBuilderWalkerImpl extends
 		return true;
 	}
 
-	private V_GenericNode createNode(String acno, String acname, String idType,
-			String color) {
-		V_GenericNode node = new V_GenericNode(acno);
-		node.setIdType(idType);
-		node.setIdVal(acno);
-		//node.setValue(acno);
-		node.setLabel(acname);
-		node.setColor(color);
-		return node;
+	@Override
+	public boolean callBack(final WalkerTransactionPair100 t, final V_GraphQuery q) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	private V_GenericEdge createEdge(V_GenericNode src, V_GenericNode target,
-			WalkerTransactionPair100 p) {
-		V_GenericEdge e = new V_GenericEdge(src, target);
+	private V_GenericEdge createEdge(final V_GenericNode src, final V_GenericNode target,
+			final WalkerTransactionPair100 p) {
+		final V_GenericEdge e = new V_GenericEdge(src, target);
 
-		String subject = p.getTrnSubjStr();
-		String payload = p.getTrnValueStr();
+		final String subject = p.getTrnSubjStr();
+		final String payload = p.getTrnValueStr();
 		String label = subject;
 
 		// prune all but 1 "RE:" if it is present
-		int index = subject.lastIndexOf("RE:");
+		final int index = subject.lastIndexOf("RE:");
 		if (index > 0) { // i.e. index is not -1 or 0
 			label = subject.substring(index);
 		}
@@ -210,8 +197,8 @@ public class EventGraphBuilderWalkerImpl extends
 
 		e.setLabel(label);
 
-		long dt = p.getTrnDt().getTime();
-		double value = p.getTrnValueNbr();
+		final long dt = p.getTrnDt().getTime();
+		final double value = p.getTrnValueNbr();
 		e.setDoubleValue(value);
 
 		e.addData("date", Long.toString(dt));
@@ -224,32 +211,44 @@ public class EventGraphBuilderWalkerImpl extends
 		return e;
 	}
 
-	@Override
-	public void performPostProcess(V_GraphQuery graphQuery) {
-		Iterator<String> iter = graphQuery.getSearchIds().iterator();
-
-		logger.debug("Performing post process");
-		String color = "red";
-
-		while (iter.hasNext()) {
-			String id = iter.next();
-			try {
-				V_GenericNode searched = nodeList.getNode(id);
-				searched.setColor(color);
-				logger.debug("Node with id(" + id + ") is now " + color);
-			} catch (Exception e) {
-				logger.error("Could not find node with id = " + id);
-			}
-		}
+	private V_GenericNode createNode(final String acno, final String acname, final String idType, final String color) {
+		final V_GenericNode node = new V_GenericNode(acno);
+		node.setIdType(idType);
+		node.setIdVal(acno);
+		// node.setValue(acno);
+		node.setLabel(acname);
+		node.setColor(color);
+		return node;
 	}
 
-	// XXX FIXME we have a generics issue with V_GraphQuery vs the Temporal one
-	// we want to use.
 	@Override
-	public V_GenericGraph makeGraphResponse(V_GraphQuery graphQuery)
-			throws Exception {
+	public V_GenericNode createNodeInSubgraph(final double minimumScoreRequired, final double inheritedScore,
+			final double localPriority, final String originalId, final String idType, final String nodeType,
+			final V_GenericNode attachTo, final String relationType, final String relationValue,
+			final double nodeCertainty, final V_GenericGraph subgraph) {
+		return null;
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(final double minimumScoreRequired, final double inheritedScore,
+			final double localPriority, final String id, final String idType, final String nodeType,
+			final V_GenericNode attachTo, final String relationType, final String relationValue,
+			final double nodeCertainty) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public V_GenericNode createOrUpdateNode(final String id, final String idType, final String nodeType,
+			final V_GenericNode attachTo, final String relationType, final String relationValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean determineTraversability(final V_GenericNode n) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
@@ -259,37 +258,66 @@ public class EventGraphBuilderWalkerImpl extends
 	}
 
 	@Override
-	public void buildQueryForNextIteration(V_GenericNode... nodes) {
-		// TODO Auto-generated method stub
+	public final List<G_DocumentError> getErrors() {
+		return null;
+	}
 
+	public G_Parser getParserForObject(final Object obj) {
+		// if (obj == null) {
+		// logger.warn("Object was invalid");
+		// return null;
+		// }
+		// for (DocumentGraphParser s : singletons) {
+		// if (s.getSupportedObjects().contains(
+		// obj.getClass().getCanonicalName())) {
+		// logger.debug("Found service " + s.getClass().getCanonicalName());
+		// return s;
+		// }
+		// }
+		// logger.debug("No handler for class "
+		// + obj.getClass().getCanonicalName());
+		return null;
 	}
 
 	@Override
-	public V_GenericNode createOrUpdateNode(String id, String idType,
-			String nodeType, V_GenericNode attachTo, String relationType,
-			String relationValue) {
+	public void inheritLabelIfNeeded(final V_GenericNode a, final V_GenericNode... nodes) {
+	}
+
+	@Override
+	public boolean isPreviouslyScannedResult(final String reportId) {
+		return false;
+	}
+
+	// XXX FIXME we have a generics issue with V_GraphQuery vs the Temporal one
+	// we want to use.
+	@Override
+	public V_GenericGraph makeGraphResponse(final V_GraphQuery graphQuery) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public boolean determineTraversability(V_GenericNode n) {
-		// TODO Auto-generated method stub
-		return false;
+	public void performPostProcess(final V_GraphQuery graphQuery) {
+		final Iterator<String> iter = graphQuery.getSearchIds().iterator();
+
+		logger.debug("Performing post process");
+		final String color = "red";
+
+		while (iter.hasNext()) {
+			final String id = iter.next();
+			try {
+				final V_GenericNode searched = nodeList.getNode(id);
+				searched.setColor(color);
+				logger.debug("Node with id(" + id + ") is now " + color);
+			} catch (final Exception e) {
+				logger.error("Could not find node with id = " + id);
+			}
+		}
 	}
 
-	@Override
-	public boolean callBack(WalkerTransactionPair100 t, V_GraphQuery q) {
-		// TODO Auto-generated method stub
-		return false;
+	public final void setScannedQueries(final Set<String> scannedQueries) {
 	}
 
-	@Override
-	public V_GenericNode createOrUpdateNode(double minimumScoreRequired,
-			double inheritedScore, double localPriority, String id,
-			String idType, String nodeType, V_GenericNode attachTo,
-			String relationType, String relationValue, double nodeCertainty) {
-		// TODO Auto-generated method stub
-		return null;
+	public final void setScannedResults(final Set<String> scannedResults) {
 	}
 }

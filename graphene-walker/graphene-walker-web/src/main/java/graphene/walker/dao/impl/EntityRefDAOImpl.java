@@ -1,26 +1,19 @@
 package graphene.walker.dao.impl;
 
-import graphene.dao.EntityRefDAO;
-import graphene.dao.IdTypeDAO;
 import graphene.dao.sql.GenericDAOJDBCImpl;
-import graphene.walker.model.funnels.BasicEntityRefFunnel;
-import graphene.walker.model.sql.walker.WalkerEntityref100;
-import graphene.walker.model.sql.walker.WalkerIdentifierType100;
-import graphene.walker.model.sql.walker.QWalkerEntityref100;
+import graphene.model.idl.G_CallBack;
 import graphene.model.idl.G_CanonicalPropertyType;
+import graphene.model.idl.G_Constraint;
+import graphene.model.idl.G_EntityQuery;
 import graphene.model.idl.G_IdType;
-import graphene.model.idl.G_SearchTuple;
-import graphene.model.idl.G_SearchType;
-import graphene.model.memorydb.IMemoryDB;
-import graphene.model.memorydb.MemRow;
-import graphene.model.query.AdvancedSearch;
-import graphene.model.query.EntityQuery;
-import graphene.model.query.G_CallBack;
-import graphene.model.query.StringQuery;
-import graphene.model.view.entities.BasicEntityRef;
+import graphene.model.idl.G_PropertyMatchDescriptor;
 import graphene.util.ExceptionUtil;
 import graphene.util.FastNumberUtils;
 import graphene.util.validator.ValidationUtils;
+import graphene.walker.model.funnels.BasicEntityRefFunnel;
+import graphene.walker.model.sql.walker.QWalkerEntityref100;
+import graphene.walker.model.sql.walker.WalkerEntityref100;
+import graphene.walker.model.sql.walker.WalkerIdentifierType100;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -41,8 +34,7 @@ import com.mysema.query.types.EntityPath;
 import com.mysema.query.types.expr.BooleanExpression;
 import com.mysema.query.types.path.StringPath;
 
-public class EntityRefDAOImpl extends
-		GenericDAOJDBCImpl<WalkerEntityref100, G_EntityQuery> implements
+public class EntityRefDAOImpl extends GenericDAOJDBCImpl<WalkerEntityref100, G_EntityQuery> implements
 		EntityRefDAO<WalkerEntityref100> {
 	private static final long INITIAL_CHUNK_SIZE = 500000;
 	static Logger logger = LoggerFactory.getLogger(EntityRefDAOImpl.class);
@@ -53,9 +45,9 @@ public class EntityRefDAOImpl extends
 	private static long MAX_RETURNABLE_RESULTS = 50000000;
 
 	private static final long MIN_CHUNK_SIZE = 100000;
-	private BasicEntityRefFunnel funnel = new BasicEntityRefFunnel();
+	private final BasicEntityRefFunnel funnel = new BasicEntityRefFunnel();
 	@Inject
-	private IdTypeDAO<WalkerIdentifierType100, StringQuery> idTypeDAO;
+	private IdTypeDAO<WalkerIdentifierType100> idTypeDAO;
 	@Inject
 	private IMemoryDB memDb;
 
@@ -63,18 +55,15 @@ public class EntityRefDAOImpl extends
 
 	}
 
-	private SQLQuery buildQuery(EntityQuery q, QWalkerEntityref100 t,
-			Connection conn) throws Exception {
-		BooleanBuilder builder = new BooleanBuilder();
+	private SQLQuery buildQuery(final EntityQuery q, final QWalkerEntityref100 t, final Connection conn)
+			throws Exception {
+		final BooleanBuilder builder = new BooleanBuilder();
 		// make sure we have a list worth writing a query about.
-		if (ValidationUtils.isValid(q)
-				&& ValidationUtils.isValid(q.getAttributeList())) {
-			ArrayList<String> optimizedIdentifierList = new ArrayList<String>(4);
-			ArrayList<String> optimizedAccountNumberList = new ArrayList<String>(
-					4);
-			ArrayList<String> optimizedCustomerNumberList = new ArrayList<String>(
-					4);
-			for (G_SearchTuple<String> tuple : q.getAttributeList()) {
+		if (ValidationUtils.isValid(q) && ValidationUtils.isValid(q.getPropertyMatchDescriptors())) {
+			final ArrayList<String> optimizedIdentifierList = new ArrayList<String>(4);
+			final ArrayList<String> optimizedAccountNumberList = new ArrayList<String>(4);
+			final ArrayList<String> optimizedCustomerNumberList = new ArrayList<String>(4);
+			for (final G_PropertyMatchDescriptor<String> tuple : q.getPropertyMatchDescriptors()) {
 				// Build a boolean clause for this loop, and then 'or' it with
 				// previous clauses
 				/*
@@ -97,25 +86,22 @@ public class EntityRefDAOImpl extends
 				 */
 
 				if (ValidationUtils.isValid(tuple.getValue())) {
-					BooleanBuilder loopBuilder = new BooleanBuilder();
+					final BooleanBuilder loopBuilder = new BooleanBuilder();
 
 					// All of the following should be exclusive.
-					if (ValidationUtils
-							.isValid(tuple.getSpecificPropertyType())) {
+					if (ValidationUtils.isValid(tuple.getSpecificPropertyType())) {
 						/*
 						 * A specific id type was specified, which is finer
 						 * grained than the canonical enum. So we disregard any
 						 * canonical enum specified and just shoot for the
 						 * specific type.
 						 */
-						BooleanExpression b = handleSearchType(t.identifier,
-								tuple);
+						final BooleanExpression b = handleSearchType(t.identifier, tuple);
 						if (b != null) {
 							loopBuilder.and(b);
 						}
-						loopBuilder.and(t.idtypeId.eq(FastNumberUtils
-								.parseIntWithCheck(tuple
-										.getSpecificPropertyType())));
+						loopBuilder
+								.and(t.idtypeId.eq(FastNumberUtils.parseIntWithCheck(tuple.getSpecificPropertyType())));
 
 					} else if (!tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ANY.name())) {
 						/*
@@ -128,14 +114,11 @@ public class EntityRefDAOImpl extends
 							/*
 							 * Search just the accountNumber column
 							 */
-							if (tuple.getSearchType().equals(
-									G_SearchType.COMPARE_EQUALS)) {
+							if (tuple.getSearchType().equals(G_Constraint.REQUIRED_EQUALS)) {
 								// we can optimize!
-								optimizedAccountNumberList
-										.add(tuple.getValue());
+								optimizedAccountNumberList.add(tuple.getValue());
 							} else {
-								BooleanExpression b = handleSearchType(
-										t.accountnumber, tuple);
+								final BooleanExpression b = handleSearchType(t.accountnumber, tuple);
 								if (b != null) {
 									loopBuilder.and(b);
 								}
@@ -148,14 +131,11 @@ public class EntityRefDAOImpl extends
 							/*
 							 * Search just the customerNumber column
 							 */
-							if (tuple.getSearchType().equals(
-									G_SearchType.COMPARE_EQUALS)) {
+							if (tuple.getSearchType().equals(G_Constraint.REQUIRED_EQUALS)) {
 								// we can optimize!
-								optimizedCustomerNumberList.add(tuple
-										.getValue());
+								optimizedCustomerNumberList.add(tuple.getValue());
 							} else {
-								BooleanExpression b = handleSearchType(
-										t.customernumber, tuple);
+								final BooleanExpression b = handleSearchType(t.customernumber, tuple);
 								if (b != null) {
 									loopBuilder.and(b);
 								}
@@ -170,16 +150,15 @@ public class EntityRefDAOImpl extends
 							 * have a specific column for, so just search all
 							 * identifiers.
 							 */
-							loopBuilder.and(handleSearchType(t.identifier,
-									tuple));
+							loopBuilder.and(handleSearchType(t.identifier, tuple));
 							/*
 							 * But since we're searching against all
 							 * identifiers, let's narrow it down by only looking
 							 * at the id types associated with the canonical
 							 * type.
 							 */
-							Integer[] idtypes = idTypeDAO.getTypesForFamily(tuple.getNodeType());
-							if (idtypes != null && idtypes.length > 0) {
+							final Integer[] idtypes = idTypeDAO.getTypesForFamily(tuple.getNodeType());
+							if ((idtypes != null) && (idtypes.length > 0)) {
 								loopBuilder.and(t.idtypeId.in(idtypes));
 							}
 
@@ -187,15 +166,13 @@ public class EntityRefDAOImpl extends
 
 					} else if (tuple.getNodeType().getName().equals(G_CanonicalPropertyType.ANY.name())) {
 
-						if (tuple.getSearchType().equals(
-								G_SearchType.COMPARE_EQUALS)) {
+						if (tuple.getSearchType().equals(G_Constraint.REQUIRED_EQUALS)) {
 							// we can optimize here.
 							optimizedIdentifierList.add(tuple.getValue());
 						} else {
 							// we can't use the c in (1,2,3...) optimization for
 							// anything but eq
-							loopBuilder.and(handleSearchType(t.identifier,
-									tuple));
+							loopBuilder.and(handleSearchType(t.identifier, tuple));
 
 						}
 					}
@@ -225,38 +202,38 @@ public class EntityRefDAOImpl extends
 	}
 
 	@Override
-	public long count(EntityQuery q) throws Exception {
+	public long count(final EntityQuery q) throws Exception {
 		Connection conn;
 		conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
-		SQLQuery sq = buildQuery(q, t, conn);
-		long count = sq.count();
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		final SQLQuery sq = buildQuery(q, t, conn);
+		final long count = sq.count();
 		conn.close();
 		return count;
 	}
 
 	@Override
-	public long countEdges(String id) throws Exception {
-		if (memDb != null && memDb.isLoaded()) {
+	public long countEdges(final String id) throws Exception {
+		if ((memDb != null) && memDb.isLoaded()) {
 			long count = 0;
 			count += memDb.getRowsForAccount(id).size();
 			count += memDb.getRowsForCustomer(id).size();
 			count += memDb.getRowsForIdentifier(id).size();
 			return count;
 		} else {
-			Connection conn = getConnection();
-			QWalkerEntityref100 t = new QWalkerEntityref100("t");
-			long count = from(conn, t)
-					.where(t.identifier.eq(id).or(t.accountnumber.eq(id))
-							.or(t.customernumber.eq(id))).distinct().count();
+			final Connection conn = getConnection();
+			final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+			final long count = from(conn, t)
+					.where(t.identifier.eq(id).or(t.accountnumber.eq(id)).or(t.customernumber.eq(id))).distinct()
+					.count();
 			conn.close();
 			return count;
 		}
 	}
 
 	@Override
-	public Set<String> entityIDsByAdvancedSearch(AdvancedSearch srch) {
-		if (memDb != null && memDb.isLoaded()) {
+	public Set<String> entityIDsByAdvancedSearch(final AdvancedSearch srch) {
+		if ((memDb != null) && memDb.isLoaded()) {
 			return memDb.entityIDsByAdvancedSearch(srch);
 		}
 		return null;
@@ -264,19 +241,19 @@ public class EntityRefDAOImpl extends
 
 	@Override
 	public List<WalkerEntityref100> findByQuery(/* long offset, long maxResults, */
-	EntityQuery q) throws Exception {
+	final EntityQuery q) throws Exception {
 
-		if (memDb != null && memDb.isLoaded()) {
-			List<G_SearchTuple<String>> values = q.getAttributeList();
-			Set<MemRow> results = new HashSet<MemRow>();
-			for (G_SearchTuple<String> est : values) {
-				String family = est.getNodeType().getName();
-				String value = est.getValue();
+		if ((memDb != null) && memDb.isLoaded()) {
+			final List<G_PropertyMatchDescriptor<String>> values = q.getPropertyMatchDescriptors();
+			final Set<MemRow> results = new HashSet<MemRow>();
+			for (final G_PropertyMatchDescriptor<String> est : values) {
+				final String family = est.getNodeType().getName();
+				final String value = est.getValue();
 				if (family.equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 					logger.debug("finding account types that match " + values);
 					try {
 						results.addAll(memDb.getRowsForAccount(value));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						logger.error("Error getting accounts that match " + values + ".");
 						e.printStackTrace();
 					}
@@ -284,18 +261,20 @@ public class EntityRefDAOImpl extends
 					logger.debug("finding customer number types that match " + values);
 					try {
 						results.addAll(memDb.getRowsForCustomer(est.getValue()));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						logger.error("Error getting customer numbers that match " + values + ".");
 						e.printStackTrace();
 					}
 				} else if (family.equals(G_CanonicalPropertyType.NAME.name())) {
 					logger.debug("finding names that match " + values);
 					// try {
-					//	 	FIXME: get rows from meDb using NAME
-					// 		results.addAll(memDb.getRowsForIdentifier(value, family.getValueString()))
+					// FIXME: get rows from meDb using NAME
+					// results.addAll(memDb.getRowsForIdentifier(value,
+					// family.getValueString()))
 					// } catch (Exception e) {
-					//		logger.error("Error getting accounts that match " + values + ".");
-					// 		e.printStackTrace();
+					// logger.error("Error getting accounts that match " +
+					// values + ".");
+					// e.printStackTrace();
 					// }
 				} else if (family.equals(G_CanonicalPropertyType.ANY.name())) {
 					logger.debug("finding any types that match " + values);
@@ -303,7 +282,7 @@ public class EntityRefDAOImpl extends
 						results.addAll(memDb.getRowsForIdentifier(value, family));
 						results.addAll(memDb.getRowsForAccount(value));
 						results.addAll(memDb.getRowsForCustomer(value));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						logger.error("Error getting anything that matches " + values + ".");
 						e.printStackTrace();
 					}
@@ -312,7 +291,7 @@ public class EntityRefDAOImpl extends
 					try {
 						// just identifiers --djue
 						results.addAll(memDb.getRowsForIdentifier(est.getValue(), family));
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						logger.error("Error getting identifiers that match " + values + ".");
 						e.printStackTrace();
 					}
@@ -324,7 +303,7 @@ public class EntityRefDAOImpl extends
 		} else {
 			Connection conn;
 			conn = getConnection();
-			QWalkerEntityref100 t = new QWalkerEntityref100("t");
+			final QWalkerEntityref100 t = new QWalkerEntityref100("t");
 			SQLQuery sq = buildQuery(q, t, conn);
 			sq = setOffsetAndLimit(q, sq);
 			List<WalkerEntityref100> results = new ArrayList<WalkerEntityref100>();
@@ -341,48 +320,45 @@ public class EntityRefDAOImpl extends
 	 * TODO: Place dialect selection at Module level, to be injected?
 	 */
 	@Override
-	protected SQLQuery from(Connection conn, EntityPath<?>... o) {
-		SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
+	protected SQLQuery from(final Connection conn, final EntityPath<?>... o) {
+		final SQLTemplates dialect = new HSQLDBTemplates(); // SQL-dialect
 		return new SQLQuery(conn, dialect).from(o);
 	}
 
 	@Override
-	public Set<String> getAccountsForCustomer(String cust) throws Exception {
-		if (memDb != null && memDb.isLoaded()) {
-			Set<String> results = new HashSet<String>();
-			Set<MemRow> rows = memDb.getRowsForCustomer(cust);
-			for (MemRow r : rows) {
-				results.add(memDb
-						.getAccountNumberForID(r.entries[IMemoryDB.ACCOUNT]));
+	public Set<String> getAccountsForCustomer(final String cust) throws Exception {
+		if ((memDb != null) && memDb.isLoaded()) {
+			final Set<String> results = new HashSet<String>();
+			final Set<MemRow> rows = memDb.getRowsForCustomer(cust);
+			for (final MemRow r : rows) {
+				results.add(memDb.getAccountNumberForID(r.entries[IMemoryDB.ACCOUNT]));
 			}
 			return results;
 		}
 		Connection conn;
 		conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
-		List<String> rows = from(conn, t)
-				.where(t.customernumber.like("%" + cust + "%")).distinct()
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		final List<String> rows = from(conn, t).where(t.customernumber.like("%" + cust + "%")).distinct()
 				.list(t.customernumber);
 		conn.close();
 
-		Set<String> results = new HashSet<String>();
-		for (String e : rows)
+		final Set<String> results = new HashSet<String>();
+		for (final String e : rows) {
 			results.add(e);
+		}
 
 		return results;
 	}
 
 	@Override
-	public List<WalkerEntityref100> getAll(long offset, long limit)
-			throws Exception {
-		List<Tuple> tupleResults = getAllTuples(offset, limit);
-		List<WalkerEntityref100> results = new ArrayList<WalkerEntityref100>(
-				tupleResults.size());
+	public List<WalkerEntityref100> getAll(final long offset, final long limit) throws Exception {
+		final List<Tuple> tupleResults = getAllTuples(offset, limit);
+		final List<WalkerEntityref100> results = new ArrayList<WalkerEntityref100>(tupleResults.size());
 		// Funnel the tuple into the bean, but unset properties will stay null
 		// and not take up space.
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
-		for (Tuple tuple : tupleResults) {
-			WalkerEntityref100 k = new WalkerEntityref100();
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		for (final Tuple tuple : tupleResults) {
+			final WalkerEntityref100 k = new WalkerEntityref100();
 			k.setAccountnumber(tuple.get(t.accountnumber));
 			k.setCustomernumber(tuple.get(t.customernumber));
 			k.setIdentifier(tuple.get(t.identifier));
@@ -400,11 +376,10 @@ public class EntityRefDAOImpl extends
 	 * @return
 	 * @throws Exception
 	 */
-	private List<WalkerEntityref100> getAllFast(long offset, long limit)
-			throws Exception {
-		Connection conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
-		SQLQuery sq = from(conn, t);
+	private List<WalkerEntityref100> getAllFast(final long offset, final long limit) throws Exception {
+		final Connection conn = getConnection();
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		final SQLQuery sq = from(conn, t);
 		/*
 		 * Use the built-in Id to grab a range. Here we are assuming something
 		 * about the IDs, so be careful, this code is not portable.
@@ -412,14 +387,13 @@ public class EntityRefDAOImpl extends
 		 * We also skip over some list of idTypes, again this is very
 		 * customer/data specific.
 		 */
-		sq.where(t.entityrefId.between(offset, limit).and(
-				t.idtypeId.notIn(idTypeDAO.getSkipTypes())));
+		sq.where(t.entityrefId.between(offset, limit).and(t.idtypeId.notIn(idTypeDAO.getSkipTypes())));
 
 		/*
 		 * Note that we are not sorting the elements here, in order to speed
 		 * things up.
 		 */
-		List<WalkerEntityref100> results = sq.list(t);
+		final List<WalkerEntityref100> results = sq.list(t);
 		conn.close();
 
 		return results;
@@ -434,14 +408,12 @@ public class EntityRefDAOImpl extends
 	 * @throws Exception
 	 */
 
-	private List<WalkerEntityref100> getAllPortable(long offset, long limit)
-			throws Exception {
-		Connection conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
+	private List<WalkerEntityref100> getAllPortable(final long offset, final long limit) throws Exception {
+		final Connection conn = getConnection();
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
 		SQLQuery sq = from(conn, t);
 		sq = setOffsetAndLimit(offset, limit, sq);
-		List<WalkerEntityref100> results = sq.orderBy(t.entityrefId.asc()).list(
-				t);
+		final List<WalkerEntityref100> results = sq.orderBy(t.entityrefId.asc()).list(t);
 		conn.close();
 
 		return results;
@@ -449,9 +421,9 @@ public class EntityRefDAOImpl extends
 
 	// A tuple version that is lighter weight -- we only ask for the columns we
 	// really want. Also uses optimized SQL.
-	private List<Tuple> getAllTuples(long offset, long limit) throws Exception {
-		Connection conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
+	private List<Tuple> getAllTuples(final long offset, final long limit) throws Exception {
+		final Connection conn = getConnection();
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
 		SQLQuery sq = from(conn, t);
 		/*
 		 * Use the built-in Id to grab a range. Here we are assuming something
@@ -462,8 +434,8 @@ public class EntityRefDAOImpl extends
 		 */
 		sq = sq.where(t.entityrefId.goe(offset).and(t.entityrefId.lt(limit)));
 
-		List<Integer> st = idTypeDAO.getSkipTypes();
-		if (st != null && st.size() > 0) {
+		final List<Integer> st = idTypeDAO.getSkipTypes();
+		if ((st != null) && (st.size() > 0)) {
 			logger.debug("Adding constraint to filter skipped types");
 			sq.where(t.idtypeId.notIn(st));
 		} else {
@@ -473,21 +445,21 @@ public class EntityRefDAOImpl extends
 		 * Note that we are not sorting the elements here, in order to speed
 		 * things up.
 		 */
-		List<Tuple> results = sq.orderBy(t.customernumber.asc()).list(
-				t.accountnumber, t.customernumber, t.identifier, t.idtypeId);
+		final List<Tuple> results = sq.orderBy(t.customernumber.asc()).list(t.accountnumber, t.customernumber,
+				t.identifier, t.idtypeId);
 		conn.close();
 
 		return results;
 	}
 
 	@Override
-	public Set<BasicEntityRef> getBasicRowsForCustomer(String id) {
-		Set<BasicEntityRef> list = new HashSet<BasicEntityRef>(3);
+	public Set<BasicEntityRef> getBasicRowsForCustomer(final String id) {
+		final Set<BasicEntityRef> list = new HashSet<BasicEntityRef>(3);
 		try {
-			for (WalkerEntityref100 x : getRowsForCustomer(id)) {
+			for (final WalkerEntityref100 x : getRowsForCustomer(id)) {
 				list.add(funnel.to(x));
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -506,37 +478,36 @@ public class EntityRefDAOImpl extends
 	protected long getMaxIndexValue() throws Exception {
 		Connection conn;
 		conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
-		List<Integer> value = from(conn, t).list(t.entityrefId.max());
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		final List<Integer> value = from(conn, t).list(t.entityrefId.max());
 
 		conn.close();
 		return value.get(0);
 	}
 
 	@Override
-	public Set<WalkerEntityref100> getRowsForCustomer(String cust)
-			throws Exception {
+	public Set<WalkerEntityref100> getRowsForCustomer(final String cust) throws Exception {
 
-		Set<WalkerEntityref100> results = new HashSet<WalkerEntityref100>();
-		if (memDb != null && memDb.isLoaded()) {
+		final Set<WalkerEntityref100> results = new HashSet<WalkerEntityref100>();
+		if ((memDb != null) && memDb.isLoaded()) {
 			// XXX: See if this step was necessary, or if it was just Eclipse
-			Set<MemRow> rows = memDb.getRowsForCustomer(cust);
-			for (MemRow r : rows) {
+			final Set<MemRow> rows = memDb.getRowsForCustomer(cust);
+			for (final MemRow r : rows) {
 				results.add(memRowToDBEntry(r));
 			}
 		} else {
-			EntityQuery q =  G_EntityQuery.newBuilder();
+			final EntityQuery q = G_EntityQuery.newBuilder();
 
-			G_SearchTuple<String> srch = new G_SearchTuple<String>();
-			srch.setSearchType(G_SearchType.COMPARE_EQUALS);
+			final G_PropertyMatchDescriptor<String> srch = new G_PropertyMatchDescriptor<String>();
+			srch.setConstraint(G_Constraint.REQUIRED_EQUALS);
 			srch.setSpecificPropertyType("customerNumber");
 			srch.setValue(cust);
 
-			List<G_SearchTuple<String>> attrs = new ArrayList<G_SearchTuple<String>>();
+			final List<G_PropertyMatchDescriptor<String>> attrs = new ArrayList<G_PropertyMatchDescriptor<String>>();
 			attrs.add(srch);
-			q.setAttributeList(attrs);
-			List<WalkerEntityref100> rows = findByQuery(q);
-			for (WalkerEntityref100 e : rows) {
+			q.setPropertyMatchDescriptors(attrs);
+			final List<WalkerEntityref100> rows = search(q);
+			for (final WalkerEntityref100 e : rows) {
 				results.add(e);
 			}
 		}
@@ -550,8 +521,7 @@ public class EntityRefDAOImpl extends
 	 * @param tuple
 	 * @return
 	 */
-	private BooleanExpression handleSearchType(StringPath path,
-			G_SearchTuple<String> tuple) {
+	private BooleanExpression handleSearchType(final StringPath path, final G_PropertyMatchDescriptor<String> tuple) {
 		BooleanExpression b = null;
 		switch (tuple.getSearchType()) {
 		case COMPARE_CONTAINS:
@@ -577,8 +547,7 @@ public class EntityRefDAOImpl extends
 			break;
 		}
 		if (b == null) {
-			logger.error("Could not make a boolean expression for search type "
-					+ tuple.getSearchType());
+			logger.error("Could not make a boolean expression for search type " + tuple.getSearchType());
 		}
 		return b;
 	}
@@ -586,7 +555,7 @@ public class EntityRefDAOImpl extends
 	@Override
 	public boolean isReady() {
 		boolean ready = false;
-		if (memDb != null && memDb.isLoaded()) {
+		if ((memDb != null) && memDb.isLoaded()) {
 			// wait until memdb is loaded.
 			ready = true;
 		} else {
@@ -596,21 +565,19 @@ public class EntityRefDAOImpl extends
 		return ready;
 	}
 
-	private List<WalkerEntityref100> memRowsToDBentries(Set<MemRow> ms) {
-		List<WalkerEntityref100> results = new ArrayList<WalkerEntityref100>();
-		for (MemRow m : ms) {
+	private List<WalkerEntityref100> memRowsToDBentries(final Set<MemRow> ms) {
+		final List<WalkerEntityref100> results = new ArrayList<WalkerEntityref100>();
+		for (final MemRow m : ms) {
 			results.add(memRowToDBEntry(m));
 		}
 		// logger.debug("Converted results: " + results);
 		return results;
 	}
 
-	private WalkerEntityref100 memRowToDBEntry(MemRow m) {
-		WalkerEntityref100 pb = new WalkerEntityref100();
-		pb.setAccountnumber(memDb
-				.getAccountNumberForID(m.entries[IMemoryDB.ACCOUNT]));
-		pb.setCustomernumber(memDb
-				.getCustomerNumberForID(m.entries[IMemoryDB.CUSTOMER]));//
+	private WalkerEntityref100 memRowToDBEntry(final MemRow m) {
+		final WalkerEntityref100 pb = new WalkerEntityref100();
+		pb.setAccountnumber(memDb.getAccountNumberForID(m.entries[IMemoryDB.ACCOUNT]));
+		pb.setCustomernumber(memDb.getCustomerNumberForID(m.entries[IMemoryDB.CUSTOMER]));//
 		pb.setIdtypeId(m.getIdType());
 		pb.setIdentifier(memDb.getIdValueForID(m.entries[IMemoryDB.IDENTIFIER]));
 		pb.setEntityrefId(m.offset); // used for deduplication
@@ -618,26 +585,23 @@ public class EntityRefDAOImpl extends
 	}
 
 	@Override
-	public boolean performCallback(long offset, long maxResults,
-			G_CallBack<WalkerEntityref100,EntityQuery> cb, G_EntityQuery q) {
+	public boolean performCallback(final long offset, final long maxResults,
+			G_CallBack<WalkerEntityref100, EntityQuery> cb, final G_EntityQuery q) {
 
 		long MAX_VALUE = 100000000;
 		try {
 			MAX_VALUE = getMaxIndexValue();
-		} catch (Exception e) {
-			logger.error("Could not retrieve max index value: "
-					+ ExceptionUtil.getRootCauseMessage(e));
+		} catch (final Exception e) {
+			logger.error("Could not retrieve max index value: " + ExceptionUtil.getRootCauseMessage(e));
 		}
-		return throttlingCallbackOnValues(offset, maxResults, cb, q,
-				INITIAL_CHUNK_SIZE, MIN_CHUNK_SIZE, MAX_CHUNK_SIZE, 0,
-				MAX_VALUE);
+		return throttlingCallbackOnValues(offset, maxResults, cb, q, INITIAL_CHUNK_SIZE, MIN_CHUNK_SIZE,
+				MAX_CHUNK_SIZE, 0, MAX_VALUE);
 	}
 
 	@Override
-	public Set<String> regexSearch(String name, String family,
-			boolean caseSensitive) {
-		if (memDb != null && memDb.isLoaded()) {
-			Set<String> matches = memDb.findRegexMatches(name,
+	public Set<String> regexSearch(final String name, final String family, final boolean caseSensitive) {
+		if ((memDb != null) && memDb.isLoaded()) {
+			final Set<String> matches = memDb.findRegexMatches(name,
 
 			family, caseSensitive);
 			return matches;
@@ -648,11 +612,11 @@ public class EntityRefDAOImpl extends
 	}
 
 	@Override
-	public List<WalkerEntityref100> rowSearch(EntityQuery q) throws Exception {
-		if (memDb != null && memDb.isLoaded()) {
-			List<G_SearchTuple<String>> values = q.getAttributeList();
-			Set<MemRow> results = new HashSet<MemRow>();
-			for (G_SearchTuple<String> s : values) {
+	public List<WalkerEntityref100> rowSearch(final EntityQuery q) throws Exception {
+		if ((memDb != null) && memDb.isLoaded()) {
+			final List<G_PropertyMatchDescriptor<String>> values = q.getPropertyMatchDescriptors();
+			final Set<MemRow> results = new HashSet<MemRow>();
+			for (final G_PropertyMatchDescriptor<String> s : values) {
 				if (s.getNodeType().getName().equals(G_CanonicalPropertyType.ACCOUNT.name())) {
 					results.addAll(memDb.getRowsForAccount(s.getValue()));
 				} else if (s.getNodeType().getName().equals(G_CanonicalPropertyType.CUSTOMER_NUMBER.name())) {
@@ -667,7 +631,7 @@ public class EntityRefDAOImpl extends
 		} else {
 			Connection conn;
 			conn = getConnection();
-			QWalkerEntityref100 t = new QWalkerEntityref100("t");
+			final QWalkerEntityref100 t = new QWalkerEntityref100("t");
 			SQLQuery sq = buildQuery(q, t, conn);
 
 			sq = setOffsetAndLimit(q.getFirstResult(), q.getMaxResult(), sq);
@@ -682,49 +646,49 @@ public class EntityRefDAOImpl extends
 	}
 
 	@Override
-	public Set<String> soundsLikeSearch(String src, String family) {
-		if (memDb != null && memDb.isLoaded()) {
-			Set<String> matches = memDb.findSoundsLikeMatches(src, family);
+	public Set<String> soundsLikeSearch(final String src, final String family) {
+		if ((memDb != null) && memDb.isLoaded()) {
+			final Set<String> matches = memDb.findSoundsLikeMatches(src, family);
 			return matches;
 		}
 		return null;
 	}
 
 	@Override
-	public Set<String> valueSearch(EntityQuery q) throws Exception {
-		if (memDb != null && memDb.isLoaded()) {
+	public Set<String> valueSearch(final EntityQuery q) throws Exception {
+		if ((memDb != null) && memDb.isLoaded()) {
 
 			/**
 			 * This is a kludge. We should pass the entire tuple list to the
 			 * 'DAO' for processing. XXX: Fix this.
 			 */
-			Set<String> stringList = new HashSet<String>();
-			for (G_SearchTuple<String> tuple : q.getAttributeList()) {
+			final Set<String> stringList = new HashSet<String>();
+			for (final G_PropertyMatchDescriptor<String> tuple : q.getPropertyMatchDescriptors()) {
 				stringList.add(tuple.getValue());
 			}
 
-			Set<String> values = memDb.getValuesContaining(stringList,
-					q.isCaseSensitive());
+			final Set<String> values = memDb.getValuesContaining(stringList, q.isCaseSensitive());
 
 			// Not yet filtered by family
-			Set<String> results = new HashSet<String>();
+			final Set<String> results = new HashSet<String>();
 			// XXX: Super kludge
-			G_IdType family = q.getAttributeList().get(0).getNodeType();
+			final G_IdType family = q.getPropertyMatchDescriptors().get(0).getNodeType();
 			// String family = q.getIdFamily();
 
-			for (String v : values) {
-				if (memDb.isIdFamily(v, family.getName()))
+			for (final String v : values) {
+				if (memDb.isIdFamily(v, family.getName())) {
 					results.add(v);
+				}
 			}
 			return results;
 		}
-		Set<String> results = new HashSet<String>();
+		final Set<String> results = new HashSet<String>();
 
 		// Note the original version of this used 'like' the comparison by
 		// default.
 		Connection conn;
 		conn = getConnection();
-		QWalkerEntityref100 t = new QWalkerEntityref100("t");
+		final QWalkerEntityref100 t = new QWalkerEntityref100("t");
 		SQLQuery sq = buildQuery(q, t, conn);
 		sq = setOffsetAndLimit(q.getFirstResult(), q.getMaxResult(), sq);
 		if (sq != null) {

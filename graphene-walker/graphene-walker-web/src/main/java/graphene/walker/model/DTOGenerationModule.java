@@ -1,10 +1,11 @@
 package graphene.walker.model;
 
+import graphene.dao.sql.DBConnectionPoolService;
+import graphene.dao.sql.util.JDBCUtil;
 import graphene.model.idl.G_SymbolConstants;
-import graphene.util.db.DBConnectionPoolService;
-import graphene.util.db.JDBCUtil;
 import graphene.util.db.MainDB;
 import graphene.util.db.SecondaryDB;
+
 import org.apache.tapestry5.ioc.OrderedConfiguration;
 import org.apache.tapestry5.ioc.ServiceBinder;
 import org.apache.tapestry5.ioc.annotations.Contribute;

@@ -3,17 +3,17 @@
  */
 package graphene.walker.dao.impl;
 
-import graphene.dao.CombinedDAO;
+import graphene.model.idl.G_CallBack;
+import graphene.model.idl.G_DataAccess;
 import graphene.model.idl.G_EntityQuery;
 import graphene.model.idl.G_SearchResult;
 import graphene.model.idl.G_SearchResults;
-import graphene.model.query.G_CallBack;
 
 /**
  * @author djue
  * 
  */
-public class CombinedDAOWalkerImpl implements CombinedDAO {
+public class CombinedDAOWalkerImpl implements G_DataAccess {
 
 	@Override
 	public long count(final G_EntityQuery q) throws Exception {
@@ -28,7 +28,7 @@ public class CombinedDAOWalkerImpl implements CombinedDAO {
 	}
 
 	@Override
-	public G_SearchResults findByQuery(final G_EntityQuery pq) throws Exception {
+	public G_SearchResults search(final G_EntityQuery pq) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -67,6 +67,10 @@ public class CombinedDAOWalkerImpl implements CombinedDAO {
 	public void setReady(final boolean b) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public String saveObject(final Object g, final String id, final String indexName, final String type, final boolean useDelay) {
+		return null;
 	}
 
 }

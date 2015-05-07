@@ -1,6 +1,6 @@
 package graphene.walker.model;
 
-import graphene.util.db.DBConnectionPoolService;
+import graphene.dao.sql.DBConnectionPoolService;
 import graphene.util.db.MainDB;
 
 import java.io.File;

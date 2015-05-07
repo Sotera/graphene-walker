@@ -1,8 +1,8 @@
 package graphene.walker.ingest;
 
 import graphene.walker.model.DTOGenerationModule;
+import graphene.dao.sql.DBConnectionPoolService;
 import graphene.introspect.Introspector;
-import graphene.util.db.DBConnectionPoolService;
 import graphene.util.db.MainDB;
 
 import java.io.File;

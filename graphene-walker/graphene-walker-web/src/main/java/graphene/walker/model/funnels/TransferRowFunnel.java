@@ -1,17 +1,17 @@
 package graphene.walker.model.funnels;
 
+import graphene.model.idl.G_Link;
 import graphene.walker.model.sql.walker.WalkerTransactionPair100;
-import graphene.model.view.events.DirectedEventRow;
 
 import org.joda.time.DateTime;
 
 public class TransferRowFunnel {
 
-	public DirectedEventRow from(WalkerTransactionPair100 e) {
+	public G_Link from(final WalkerTransactionPair100 e) {
 		// TODO Auto-generated method stub
-		DirectedEventRow tr = new DirectedEventRow();
+		final G_Link tr = new G_Link();
 		if (e != null) {
-			DateTime dt = new DateTime(e.getTrnDt());
+			final DateTime dt = new DateTime(e.getTrnDt());
 
 			tr.setDate(e.getTrnDt());
 			tr.setDay_one_based(dt.getDayOfMonth());

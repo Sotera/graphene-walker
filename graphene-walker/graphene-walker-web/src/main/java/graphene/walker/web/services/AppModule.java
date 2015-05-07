@@ -7,7 +7,7 @@ import graphene.util.UtilModule;
 import graphene.walker.dao.WalkerDAOModule;
 import graphene.walker.model.graphserver.GraphServerModule;
 //import graphene.web.security.ShiroSecurityModule;
-import graphene.web.security.NoSecurityModule;
+import graphene.web.security.noop.NoSecurityModule;
 import graphene.web.services.GrapheneModule;
 import graphene.web.services.SearchBrokerService;
 import graphene.web.services.SearchBrokerServiceDefaultImpl;

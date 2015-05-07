@@ -1,25 +1,16 @@
 package graphene.walker.dao;
 
-import graphene.dao.CombinedDAO;
 import graphene.dao.DataSourceListDAO;
-import graphene.dao.EntityDAO;
-import graphene.dao.EntityGraphDAO;
-import graphene.dao.EntityRefDAO;
 import graphene.dao.GroupDAO;
-import graphene.dao.IdTypeDAO;
 import graphene.dao.LoggingDAO;
-import graphene.dao.LoggingDAONullImpl;
 import graphene.dao.PermissionDAO;
 import graphene.dao.RoleDAO;
-import graphene.dao.TransactionDAO;
 import graphene.dao.UserDAO;
 import graphene.dao.UserGroupDAO;
 import graphene.dao.UserWorkspaceDAO;
 import graphene.dao.WorkspaceDAO;
 import graphene.dao.annotations.EntityLightFunnelMarker;
-import graphene.dao.impl.EntityDAOImpl;
 import graphene.dao.neo4j.DAONeo4JEModule;
-import graphene.dao.neo4j.EntityGraphDAONeo4JEImpl;
 import graphene.dao.neo4j.GroupDAONeo4JEImpl;
 import graphene.dao.neo4j.UserDAONeo4JEImpl;
 import graphene.dao.neo4j.UserGroupDAONeo4JEImpl;
@@ -29,14 +20,14 @@ import graphene.dao.neo4j.funnel.GroupFunnel;
 import graphene.dao.neo4j.funnel.UserFunnel;
 import graphene.dao.neo4j.funnel.WorkspaceFunnel;
 import graphene.dao.sql.DAOSQLModule;
+import graphene.dao.sql.util.JDBCUtil;
 import graphene.model.funnels.Funnel;
-import graphene.model.memorydb.IMemoryDB;
-import graphene.model.memorydb.MemoryDBModule;
+import graphene.model.idl.G_DataAccess;
+import graphene.services.LoggingDAONoOpImpl;
 import graphene.services.SimplePermissionDAOImpl;
 import graphene.services.SimpleRoleDAOImpl;
 import graphene.util.FastNumberUtils;
 import graphene.util.PropertiesFileSymbolProvider;
-import graphene.util.db.JDBCUtil;
 import graphene.walker.dao.impl.CombinedDAOWalkerImpl;
 import graphene.walker.dao.impl.DataSourceListDAOImpl;
 import graphene.walker.dao.impl.EntityRefDAOImpl;
@@ -69,35 +60,30 @@ import org.slf4j.LoggerFactory;
 @SubModule({ DAOSQLModule.class, DAONeo4JEModule.class })
 public class WalkerDAOModule {
 
-	private static Logger logger = LoggerFactory
-			.getLogger(WalkerDAOModule.class);
+	private static Logger logger = LoggerFactory.getLogger(WalkerDAOModule.class);
 
 	public static void bind(final ServiceBinder binder) {
-		binder.bind(CombinedDAO.class, CombinedDAOWalkerImpl.class);
+		binder.bind(G_DataAccess.class, CombinedDAOWalkerImpl.class);
 		binder.bind(RoleDAO.class, SimpleRoleDAOImpl.class);
 		binder.bind(PermissionDAO.class, SimplePermissionDAOImpl.class);
 
-		binder.bind(EntityRefDAO.class, EntityRefDAOImpl.class).scope(
-				ScopeConstants.PERTHREAD);
+		binder.bind(EntityRefDAO.class, EntityRefDAOImpl.class).scope(ScopeConstants.PERTHREAD);
 
 		binder.bind(EntityDAO.class, EntityDAOImpl.class);
 
 		binder.bind(IdTypeDAO.class, IdTypeDAOSQLImpl.class);
 
-		binder.bind(TransactionDAO.class, TransactionDAOSQLImpl.class).withId(
-				"Primary");
+		binder.bind(TransactionDAO.class, TransactionDAOSQLImpl.class).withId("Primary");
 
 		// TODO: Make this into a service in the core we can contribute to (for
 		// distributed configuration!)
 		binder.bind(DataSourceListDAO.class, DataSourceListDAOImpl.class);
-		binder.bind(Funnel.class, WalkerEntityLightFunnel.class).withMarker(
-				EntityLightFunnelMarker.class);
+		binder.bind(Funnel.class, WalkerEntityLightFunnel.class).withMarker(EntityLightFunnelMarker.class);
 
 		binder.bind(IMemoryDB.class, WalkerMemoryDB.class);
 		// binder.bind(Funnel.class, DefaultEntityLightFunnel.class).withMarker(
 		// EntityLightFunnelMarker.class);
 		// Wiring for user services
-		binder.bind(EntityGraphDAO.class, EntityGraphDAONeo4JEImpl.class);
 		binder.bind(GroupDAO.class, GroupDAONeo4JEImpl.class);
 
 		binder.bind(WorkspaceDAO.class, WorkspaceDAONeo4JEImpl.class);
@@ -107,7 +93,7 @@ public class WalkerDAOModule {
 		binder.bind(GroupFunnel.class);
 		binder.bind(UserFunnel.class);
 		binder.bind(WorkspaceFunnel.class);
-		binder.bind(LoggingDAO.class, LoggingDAONullImpl.class);
+		binder.bind(LoggingDAO.class, LoggingDAONoOpImpl.class);
 	}
 
 	/**
@@ -118,48 +104,37 @@ public class WalkerDAOModule {
 	 * @param configuration
 	 */
 	@Contribute(JDBCUtil.class)
-	public static void contributeDesiredJDBCDriverClasses(
-			final Configuration<String> configuration) {
+	public static void contributeDesiredJDBCDriverClasses(final Configuration<String> configuration) {
 		configuration.add("org.hsqldb.jdbc.JDBCDriver");
 	}
 
 	@Startup
-	public static void scheduleJobs(
-			final ParallelExecutor executor,
-			final IMemoryDB memoryDb,
+	public static void scheduleJobs(final ParallelExecutor executor, final IMemoryDB memoryDb,
 			@Inject @Symbol(MemoryDBModule.USE_MEMDB_PARAMETER) final String useMemoryDB,
 			@Inject @Symbol(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER) final String maxRecords) {
 
-		System.out.println(MemoryDBModule.USE_MEMDB_PARAMETER + "="
-				+ useMemoryDB);
-		System.out.println(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER + "="
-				+ maxRecords);
+		System.out.println(MemoryDBModule.USE_MEMDB_PARAMETER + "=" + useMemoryDB);
+		System.out.println(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER + "=" + maxRecords);
 		if ("true".equalsIgnoreCase(useMemoryDB)) {
-			System.out
-					.println("Scheduling parallel job to load in-memory database.");
+			System.out.println("Scheduling parallel job to load in-memory database.");
 			executor.invoke(IMemoryDB.class, new Invokable<IMemoryDB>() {
 				@Override
 				public IMemoryDB invoke() {
-					memoryDb.initialize(FastNumberUtils
-							.parseIntWithCheck(maxRecords));
+					memoryDb.initialize(FastNumberUtils.parseIntWithCheck(maxRecords));
 					return memoryDb;
 				}
 			});
 		}
 	}
 
-	public PropertiesFileSymbolProvider buildTableNameSymbolProvider(
-			final Logger logger) {
-		return new PropertiesFileSymbolProvider(logger,
-				"tablenames.properties", true);
+	public PropertiesFileSymbolProvider buildTableNameSymbolProvider(final Logger logger) {
+		return new PropertiesFileSymbolProvider(logger, "tablenames.properties", true);
 	}
 
 	// added for testing --djue
-	public void contributeApplicationDefaults(
-			final MappedConfiguration<String, String> configuration) {
+	public void contributeApplicationDefaults(final MappedConfiguration<String, String> configuration) {
 		configuration.add(MemoryDBModule.MAX_MEMDB_ROWS_PARAMETER, "0");
 		configuration.add(MemoryDBModule.USE_MEMDB_PARAMETER, "true");
-		configuration.add(MemoryDBModule.CACHEFILELOCATION,
-				"%CATALINA_HOME%/data/WalkerEntityRefCache.data");
+		configuration.add(MemoryDBModule.CACHEFILELOCATION, "%CATALINA_HOME%/data/WalkerEntityRefCache.data");
 	}
 }

@@ -1,20 +1,13 @@
 package graphene.walker.web.services;
 
-import graphene.walker.web.rest.DataSourceServerRSImpl;
-import graphene.walker.web.rest.EntityServerRSImpl;
-import graphene.walker.web.rest.ExportGraphRSImpl;
-import graphene.walker.web.rest.LedgerFreeTextRSImpl;
 import graphene.rest.ws.CSGraphServerRS;
-import graphene.rest.ws.DataSourceServerRS;
-import graphene.rest.ws.EntityServerRS;
-import graphene.rest.ws.EventServerRS;
 import graphene.rest.ws.ExportGraphRS;
-import graphene.rest.ws.GraphmlServerRS;
 //import graphene.rest.ws.LedgerFreeTextRS;
 import graphene.rest.ws.UDSessionRS;
 import graphene.rest.ws.impl.CSGraphServerRSImpl;
-import graphene.rest.ws.impl.GraphmlServerRSImpl;
 import graphene.rest.ws.impl.UDSessionRSImpl;
+import graphene.walker.web.rest.DataSourceServerRSImpl;
+import graphene.walker.web.rest.ExportGraphRSImpl;
 
 import org.apache.tapestry5.ioc.Configuration;
 import org.apache.tapestry5.ioc.MappedConfiguration;
@@ -33,11 +26,8 @@ import org.tynamo.resteasy.ResteasySymbols;
  * 
  */
 public class AppRestModule {
-	public static void bind(ServiceBinder binder) {
+	public static void bind(final ServiceBinder binder) {
 		binder.bind(EntityServerRS.class, EntityServerRSImpl.class);
-		binder.bind(GraphmlServerRS.class, GraphmlServerRSImpl.class);
-		// binder.bind(EventServerRS.class, EventServerRSImpl.class);
-		//binder.bind(LedgerFreeTextRS.class, LedgerFreeTextRSImpl.class);
 		binder.bind(UDSessionRS.class, UDSessionRSImpl.class); // MFM
 		binder.bind(ExportGraphRS.class, ExportGraphRSImpl.class);
 		binder.bind(DataSourceServerRS.class, DataSourceServerRSImpl.class);
@@ -53,58 +43,47 @@ public class AppRestModule {
 	 */
 
 	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			GraphmlServerRS restService) {
+	public static void contributeApplication(final Configuration<Object> singletons, final CSGraphServerRS restService) {
+		singletons.add(restService);
+	}
+
+	// @Contribute(javax.ws.rs.core.Application.class)
+	// public static void contributeApplication(Configuration<Object>
+	// singletons,
+	// LedgerFreeTextRS restService) {
+	// singletons.add(restService);
+	// }
+
+	@Contribute(javax.ws.rs.core.Application.class)
+	public static void contributeApplication(final Configuration<Object> singletons,
+			final DataSourceServerRS restService) {
 		singletons.add(restService);
 	}
 
 	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			CSGraphServerRS restService) {
-		singletons.add(restService);
-	}
-
-	//@Contribute(javax.ws.rs.core.Application.class)
-	//public static void contributeApplication(Configuration<Object> singletons,
-	//		LedgerFreeTextRS restService) {
-	//	singletons.add(restService);
-	//}
-
-	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			EventServerRS restService) {
+	public static void contributeApplication(final Configuration<Object> singletons, final EntityServerRS restService) {
 		singletons.add(restService);
 	}
 
 	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			EntityServerRS restService) {
+	public static void contributeApplication(final Configuration<Object> singletons, final EventServerRS restService) {
+		singletons.add(restService);
+	}
+
+	@Contribute(javax.ws.rs.core.Application.class)
+	public static void contributeApplication(final Configuration<Object> singletons, final ExportGraphRS restService) {
 		singletons.add(restService);
 	}
 
 	// MFM added 1/3/14
 	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			UDSessionRS restService) {
-		singletons.add(restService);
-	}
-
-	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			ExportGraphRS restService) {
-		singletons.add(restService);
-	}
-	
-	@Contribute(javax.ws.rs.core.Application.class)
-	public static void contributeApplication(Configuration<Object> singletons,
-			DataSourceServerRS restService) {
+	public static void contributeApplication(final Configuration<Object> singletons, final UDSessionRS restService) {
 		singletons.add(restService);
 	}
 
 	@Contribute(SymbolProvider.class)
 	@ApplicationDefaults
-	public static void provideSymbols(
-			MappedConfiguration<String, String> configuration) {
+	public static void provideSymbols(final MappedConfiguration<String, String> configuration) {
 		configuration.add(ResteasySymbols.MAPPING_PREFIX, "/rest");
 
 		// This disables the autoscanning of graphene.walker.web.rest
@@ -121,8 +100,7 @@ public class AppRestModule {
 	 * @param configuration
 	 */
 	@Contribute(ResteasyPackageManager.class)
-	public static void resteasyPackageManager(
-			Configuration<String> configuration) {
+	public static void resteasyPackageManager(final Configuration<String> configuration) {
 		configuration.add("graphene.walker.web.rest.autobuild");
 	}
 

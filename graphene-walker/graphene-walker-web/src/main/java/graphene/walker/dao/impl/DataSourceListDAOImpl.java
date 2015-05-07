@@ -90,4 +90,8 @@ public class DataSourceListDAOImpl implements DataSourceListDAO {
 		return dataSource;
 	}
 
+	public List<String> getAvailableTypes(final String theIndex) {
+		return null;
+	}
+
 }
